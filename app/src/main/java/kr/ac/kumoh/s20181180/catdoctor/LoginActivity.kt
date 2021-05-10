@@ -1,14 +1,16 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.Auth
+import androidx.lifecycle.MutableLiveData
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -18,20 +20,37 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_register.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class LoginActivity : AppCompatActivity() {
-
+    val url = "http://192.168.0.6:8080/user"
+    private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
+    data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String)
+    private val info = ArrayList<Info>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        Log.i("checkbox",checkbox.text.toString())
+
+        register_btn.setOnClickListener {
+            val intent=Intent(this, RegisterActivity::class.java)
+            intent.putExtra("info", info)
+            startActivity(intent)
+        }
+
+        mQueue = Volley.newRequestQueue(this)
+        requestInfo()
+
         // 로그인 공통 callback 구성
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -49,11 +68,12 @@ class LoginActivity : AppCompatActivity() {
                 startMainActivity()
             }
         }
+
         google_login_btn.setOnClickListener {
             signIn()
         }
-        findViewById<ImageView>(R.id.kakao_login_btn).setOnClickListener {
 
+        kakao_login_btn.setOnClickListener {
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
                 UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
@@ -61,13 +81,32 @@ class LoginActivity : AppCompatActivity() {
                 UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
             }
         }
+
+        login_btn.setOnClickListener {
+            for (i in 0 until info.size) {
+                if(info[i].user_id.equals(id_txt.text.toString())) {
+                    if (info[i].password.equals(password_txt.text.toString())) {
+                        Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+                        startMainActivity()
+                    } else {
+                        Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
+                        Log.e("LOGIN FAIL", "로그인 실패")
+                    }
+                }
+                else{
+                    Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
+                    Log.e("LOGIN FAIL", "로그인 실패")
+                }
+            }
+        }
     }
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
-    }
+
+//    override fun onStart() {
+//        super.onStart()
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        val currentUser = auth.currentUser
+//        updateUI(currentUser)
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -128,5 +167,32 @@ class LoginActivity : AppCompatActivity() {
         startActivity(Intent(this, MainActivity::class.java))
     }
 
-
+    private fun requestInfo() {
+        val request = JsonArrayRequest(
+            Request.Method.GET,
+            url,
+            null,
+            {
+                //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                info.clear()
+                parseJson(it)
+            },
+            {
+                Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+            }
+        )
+        request.tag = "VolleyRequest"
+        mQueue.add(request)
+    }
+    private fun parseJson(items: JSONArray) {
+        for (i in 0 until items.length()) {
+            val item: JSONObject = items[i] as JSONObject
+            val id = item.getInt("id")
+            val user_id = item.getString("user_id")
+            val password = item.getString("password")
+            val name = item.getString("name")
+            val nickname = item.getString("nickname")
+            info.add(Info(id, user_id, password, name, nickname))
+        }
+    }
 }

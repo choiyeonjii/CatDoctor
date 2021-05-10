@@ -9,7 +9,7 @@
         android:usesCleartextTraffic="true"
         android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@drawable/paw"
+        android:icon="@drawable/cat"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -19,8 +19,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter></activity>
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".RegisterActivity"></activity>
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
