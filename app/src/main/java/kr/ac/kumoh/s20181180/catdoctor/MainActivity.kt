@@ -2,6 +2,7 @@ package kr.ac.kumoh.s20181180.catdoctor
 
 // 참고자료 : https://colab.research.google.com/drive/135lSP5ttRFtgBlAE2P81oSBE1zMJNhSJ#scrollTo=etvPtH9l2QfU
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -22,24 +23,49 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var mQueue: RequestQueue
+    private var kakao=0
+    private var google=0
+    private var normal=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mQueue = Volley.newRequestQueue(this)
 
+        kakao = intent.getIntExtra("kakao", kakao)
+        google = intent.getIntExtra("google", google)
+        normal = intent.getIntExtra("normal", normal)
+
+//        login_btn.setOnClickListener {
+//            startActivity(Intent(this, LoginActivity::class.java))
+//        }
+
         //requestGundam()
-        kakao_logout_btn.setOnClickListener {
-            // 로그아웃
-            UserApiClient.instance.logout { error ->
-                if (error != null) {
-                    Log.e("TAG","로그아웃 실패. SDK에서 토큰 삭제됨", error)
+        logout_btn.setOnClickListener {
+            if(kakao!=0) {
+                // kakao 로그아웃
+                UserApiClient.instance.logout { error ->
+                    if (error != null) {
+                        Log.e("TAG", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                    } else {
+                        kakao=0
+                        Toast.makeText(this, "로그아웃 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
+                        Log.i("TAG", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    }
                 }
-                else {
-                    Toast.makeText(this, "로그아웃 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
-                    Log.i("TAG", "로그아웃 성공. SDK에서 토큰 삭제됨")
-                    finish()
-                }
+            }
+            else if(normal!=0){
+                normal=0
+                Toast.makeText(this, "로그아웃 성공.", Toast.LENGTH_LONG).show()
+                intent=Intent(this, LoginActivity::class.java)
+                intent.putExtra("normal", normal)
+                startActivity(intent)
+                finish()
+            }
+            else if(google!=0){
+
             }
         }
         kakao_signout_btn.setOnClickListener{

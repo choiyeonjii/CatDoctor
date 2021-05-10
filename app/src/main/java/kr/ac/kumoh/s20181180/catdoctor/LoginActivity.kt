@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.Serializable
 
 
 class LoginActivity : AppCompatActivity() {
@@ -32,15 +33,20 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private var kakao=0
+    private var google=0
+    private var normal=0
 
-    data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String)
+    data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String):Serializable
     private val info = ArrayList<Info>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        Log.i("checkbox",checkbox.text.toString())
+        kakao = intent.getIntExtra("kakao", kakao)
+        google = intent.getIntExtra("google", google)
+        normal = intent.getIntExtra("normal", normal)
 
         register_btn.setOnClickListener {
             val intent=Intent(this, RegisterActivity::class.java)
@@ -65,7 +71,8 @@ class LoginActivity : AppCompatActivity() {
             }
             else if (token != null) {
                 Log.v(KAKAO_TAG, "로그인 성공")
-                startMainActivity()
+                kakao+=1
+                startMainActivity(kakao,google,normal)
             }
         }
 
@@ -87,13 +94,21 @@ class LoginActivity : AppCompatActivity() {
                 if(info[i].user_id.equals(id_txt.text.toString())) {
                     if (info[i].password.equals(password_txt.text.toString())) {
                         Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
-                        startMainActivity()
+                        Log.i("password", info[i].password.toString())
+                        Log.i("password_txt", password_txt.text.toString())
+                        normal+=1
+                        startMainActivity(kakao,google,normal)
+                        break
                     } else {
+                        Log.i("password", info[i].password.toString())
+                        Log.i("password_txt", password_txt.text.toString())
                         Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
                         Log.e("LOGIN FAIL", "로그인 실패")
                     }
                 }
                 else{
+                    Log.i("user_id", info[i].user_id.toString())
+                    Log.i("id_txt", id_txt.text.toString())
                     Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
                     Log.e("LOGIN FAIL", "로그인 실패")
                 }
@@ -154,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
     // [END signin]
 
     private fun updateUI(user: FirebaseUser?) {
-        startMainActivity()
+        startMainActivity(kakao,google,normal)
     }
 
     companion object {
@@ -163,8 +178,13 @@ class LoginActivity : AppCompatActivity() {
         private const val KAKAO_TAG = "kakaoLoginActivity"
     }
 
-    private fun startMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
+    private fun startMainActivity(kakao: Int, google: Int, normal: Int) {
+        intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("kakao", kakao)
+        intent.putExtra("google", google)
+        intent.putExtra("normal", normal)
+        startActivity(intent)
+        finish()
     }
 
     private fun requestInfo() {
