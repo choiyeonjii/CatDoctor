@@ -1,6 +1,8 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -36,6 +38,8 @@ class LoginActivity : AppCompatActivity() {
     private var kakao=0
     private var google=0
     private var normal=0
+    private lateinit var prefs: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String):Serializable
     private val info = ArrayList<Info>()
@@ -44,9 +48,28 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        kakao = intent.getIntExtra("kakao", kakao)
-        google = intent.getIntExtra("google", google)
-        normal = intent.getIntExtra("normal", normal)
+        prefs = this.getSharedPreferences("Prefs", 0)
+        editor = prefs.edit()
+
+        Log.i("LoginActivity: kakao", kakao.toString())
+        Log.i("google", google.toString())
+        Log.i("normal", normal.toString())
+
+        kakao= prefs.getInt("kakao", 0)
+        normal= prefs.getInt("normal", 0)
+
+        Log.i("LoginActivity: kakao", kakao.toString())
+        Log.i("google", google.toString())
+        Log.i("normal", normal.toString())
+
+        if(kakao==0 && google==0 && normal==0){
+            kakao = intent.getIntExtra("kakao", kakao)
+            google = intent.getIntExtra("google", google)
+            normal = intent.getIntExtra("normal", normal)
+        }
+        else{
+            startMainActivity(kakao,google,normal)
+        }
 
         register_btn.setOnClickListener {
             val intent=Intent(this, RegisterActivity::class.java)
@@ -70,8 +93,10 @@ class LoginActivity : AppCompatActivity() {
                 Log.e(KAKAO_TAG, "로그인 실패", error)
             }
             else if (token != null) {
-                Log.v(KAKAO_TAG, "로그인 성공")
+                Log.v(KAKAO_TAG, "로그인 성공 ${token.accessToken}")
                 kakao+=1
+                editor.putInt("kakao", kakao).apply()
+                editor.commit()
                 startMainActivity(kakao,google,normal)
             }
         }
@@ -93,22 +118,27 @@ class LoginActivity : AppCompatActivity() {
             for (i in 0 until info.size) {
                 if(info[i].user_id.equals(id_txt.text.toString())) {
                     if (info[i].password.equals(password_txt.text.toString())) {
-                        Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
-                        Log.i("password", info[i].password.toString())
-                        Log.i("password_txt", password_txt.text.toString())
-                        normal+=1
-                        startMainActivity(kakao,google,normal)
-                        break
+                        if(checkbox.isChecked){
+                            Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+                            normal+=1
+                            editor.putInt("normal", normal).apply()
+                            editor.commit()
+                            Log.i("login normal", normal.toString())
+                            startMainActivity(kakao,google,normal)
+                            break
+                        }
+                        else{
+                            Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+                            normal+=1
+                            startMainActivity(kakao,google,normal)
+                            break
+                        }
                     } else {
-                        Log.i("password", info[i].password.toString())
-                        Log.i("password_txt", password_txt.text.toString())
                         Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
                         Log.e("LOGIN FAIL", "로그인 실패")
                     }
                 }
                 else{
-                    Log.i("user_id", info[i].user_id.toString())
-                    Log.i("id_txt", id_txt.text.toString())
                     Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
                     Log.e("LOGIN FAIL", "로그인 실패")
                 }
