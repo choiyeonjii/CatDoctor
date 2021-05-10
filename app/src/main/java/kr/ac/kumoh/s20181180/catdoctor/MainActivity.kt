@@ -2,6 +2,8 @@ package kr.ac.kumoh.s20181180.catdoctor
 
 // 참고자료 : https://colab.research.google.com/drive/135lSP5ttRFtgBlAE2P81oSBE1zMJNhSJ#scrollTo=etvPtH9l2QfU
 
+import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -22,24 +24,60 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var mQueue: RequestQueue
+    private var kakao=0
+    private var google=0
+    private var normal=0
+
+    private lateinit var prefs: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mQueue = Volley.newRequestQueue(this)
 
+        prefs = this.getSharedPreferences("Prefs", 0)
+        editor = prefs.edit()
+
+        kakao = intent.getIntExtra("kakao", kakao)
+        google = intent.getIntExtra("google", google)
+        normal = intent.getIntExtra("normal", normal)
+
+        Log.i("MainActivity: kakao", kakao.toString())
+        Log.i("google", google.toString())
+        Log.i("normal", normal.toString())
+
+
         //requestGundam()
-        kakao_logout_btn.setOnClickListener {
-            // 로그아웃
-            UserApiClient.instance.logout { error ->
-                if (error != null) {
-                    Log.e("TAG","로그아웃 실패. SDK에서 토큰 삭제됨", error)
+        logout_btn.setOnClickListener {
+            if(kakao!=0) {
+                // kakao 로그아웃
+                UserApiClient.instance.logout { error ->
+                    if (error != null) {
+                        Log.e("TAG", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                    } else {
+                        kakao=0
+                        editor.putInt("kakao", kakao).apply()
+                        editor.commit()
+                        Toast.makeText(this, "로그아웃 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
+                        Log.i("TAG", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    }
                 }
-                else {
-                    Toast.makeText(this, "로그아웃 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
-                    Log.i("TAG", "로그아웃 성공. SDK에서 토큰 삭제됨")
-                    finish()
-                }
+            }
+            else if(normal!=0){
+                normal=0
+                editor.putInt("normal", normal).apply()
+                editor.commit()
+                Toast.makeText(this, "로그아웃 성공.", Toast.LENGTH_LONG).show()
+                intent=Intent(this, LoginActivity::class.java)
+                intent.putExtra("normal", normal)
+                startActivity(intent)
+                finish()
+            }
+            else if(google!=0){
+
             }
         }
         kakao_signout_btn.setOnClickListener{
@@ -49,8 +87,12 @@ class MainActivity : AppCompatActivity() {
                     Log.e("TAG", "연결 끊기 실패", error)
                 }
                 else {
+                    kakao=0
+                    editor.putInt("kakao", kakao).apply()
+                    editor.commit()
                     Toast.makeText(this, "연결 끊기 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
                     Log.i("TAG", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+                    startActivity(Intent(this, LoginActivity::class.java))
                     finish()
                 }
             }

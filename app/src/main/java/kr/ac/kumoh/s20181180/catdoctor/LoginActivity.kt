@@ -1,6 +1,8 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -25,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.Serializable
 
 
 class LoginActivity : AppCompatActivity() {
@@ -32,15 +35,41 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private var kakao=0
+    private var google=0
+    private var normal=0
+    private lateinit var prefs: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
-    data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String)
+    data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String):Serializable
     private val info = ArrayList<Info>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        Log.i("checkbox",checkbox.text.toString())
+        prefs = this.getSharedPreferences("Prefs", 0)
+        editor = prefs.edit()
+
+        Log.i("LoginActivity: kakao", kakao.toString())
+        Log.i("google", google.toString())
+        Log.i("normal", normal.toString())
+
+        kakao= prefs.getInt("kakao", 0)
+        normal= prefs.getInt("normal", 0)
+
+        Log.i("LoginActivity: kakao", kakao.toString())
+        Log.i("google", google.toString())
+        Log.i("normal", normal.toString())
+
+        if(kakao==0 && google==0 && normal==0){
+            kakao = intent.getIntExtra("kakao", kakao)
+            google = intent.getIntExtra("google", google)
+            normal = intent.getIntExtra("normal", normal)
+        }
+        else{
+            startMainActivity(kakao,google,normal)
+        }
 
         register_btn.setOnClickListener {
             val intent=Intent(this, RegisterActivity::class.java)
@@ -64,8 +93,11 @@ class LoginActivity : AppCompatActivity() {
                 Log.e(KAKAO_TAG, "로그인 실패", error)
             }
             else if (token != null) {
-                Log.v(KAKAO_TAG, "로그인 성공")
-                startMainActivity()
+                Log.v(KAKAO_TAG, "로그인 성공 ${token.accessToken}")
+                kakao+=1
+                editor.putInt("kakao", kakao).apply()
+                editor.commit()
+                startMainActivity(kakao,google,normal)
             }
         }
 
@@ -86,8 +118,21 @@ class LoginActivity : AppCompatActivity() {
             for (i in 0 until info.size) {
                 if(info[i].user_id.equals(id_txt.text.toString())) {
                     if (info[i].password.equals(password_txt.text.toString())) {
-                        Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
-                        startMainActivity()
+                        if(checkbox.isChecked){
+                            Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+                            normal+=1
+                            editor.putInt("normal", normal).apply()
+                            editor.commit()
+                            Log.i("login normal", normal.toString())
+                            startMainActivity(kakao,google,normal)
+                            break
+                        }
+                        else{
+                            Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+                            normal+=1
+                            startMainActivity(kakao,google,normal)
+                            break
+                        }
                     } else {
                         Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
                         Log.e("LOGIN FAIL", "로그인 실패")
@@ -154,7 +199,7 @@ class LoginActivity : AppCompatActivity() {
     // [END signin]
 
     private fun updateUI(user: FirebaseUser?) {
-        startMainActivity()
+        startMainActivity(kakao,google,normal)
     }
 
     companion object {
@@ -163,8 +208,13 @@ class LoginActivity : AppCompatActivity() {
         private const val KAKAO_TAG = "kakaoLoginActivity"
     }
 
-    private fun startMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
+    private fun startMainActivity(kakao: Int, google: Int, normal: Int) {
+        intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("kakao", kakao)
+        intent.putExtra("google", google)
+        intent.putExtra("normal", normal)
+        startActivity(intent)
+        finish()
     }
 
     private fun requestInfo() {
