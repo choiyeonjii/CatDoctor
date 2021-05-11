@@ -14,10 +14,13 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
-
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 class MainActivity : AppCompatActivity() {
     companion object {
         const val QUEUE_TAG = "VolleyRequest"
@@ -30,6 +33,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +48,9 @@ class MainActivity : AppCompatActivity() {
         kakao = intent.getIntExtra("kakao", kakao)
         google = intent.getIntExtra("google", google)
         normal = intent.getIntExtra("normal", normal)
-
         Log.i("MainActivity: kakao", kakao.toString())
         Log.i("google", google.toString())
         Log.i("normal", normal.toString())
-
-
         //requestGundam()
         logout_btn.setOnClickListener {
             if(kakao!=0) {
@@ -77,25 +80,46 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             else if(google!=0){
-
+                Firebase.auth.signOut()
+                Log.v("logout","구글 로그아웃 성공")
+                editor.putInt("google", google).apply()
+                editor.commit()
+                google=0
+                intent=Intent(this, LoginActivity::class.java)
+                intent.putExtra("google", google)
+                startActivity(intent)
+                finish()
             }
         }
         kakao_signout_btn.setOnClickListener{
             // 연결 끊기
-            UserApiClient.instance.unlink { error ->
-                if (error != null) {
-                    Log.e("TAG", "연결 끊기 실패", error)
+            if(kakao!=0) {
+                UserApiClient.instance.unlink { error ->
+                    if (error != null) {
+                        Log.e("TAG", "연결 끊기 실패", error)
+                    }
+                    else {
+                        kakao=0
+                        editor.putInt("kakao", kakao).apply()
+                        editor.commit()
+                        Toast.makeText(this, "연결 끊기 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
+                        Log.i("TAG", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    }
                 }
-                else {
-                    kakao=0
-                    editor.putInt("kakao", kakao).apply()
+            }
+            else if(google!=0){
+                var user = Firebase.auth.currentUser;
+                user.delete().addOnCompleteListener {
+                    google=0
+                    editor.putInt("google", google).apply()
                     editor.commit()
-                    Toast.makeText(this, "연결 끊기 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
-                    Log.i("TAG", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                     startActivity(Intent(this, LoginActivity::class.java))
                     finish()
                 }
             }
+
         }
     }
 
@@ -106,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestGundam() {
         // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        val url = "http://192.168.0.15:8080/symptom"
+        val url = "http://192.168.0.102:8080/symptom"
 
         val request = JsonArrayRequest(
                 Request.Method.GET,

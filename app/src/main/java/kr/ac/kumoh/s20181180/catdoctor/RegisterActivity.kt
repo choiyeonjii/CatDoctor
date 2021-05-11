@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
@@ -16,7 +17,7 @@ import org.json.JSONObject
 
 
 class RegisterActivity : AppCompatActivity() {
-    val url = "http://192.168.0.6:8080/insert"
+    val url = "http://192.168.0.102:8080/insert"
     private var check=0
     private var able=0
     private lateinit var mQueue: RequestQueue
@@ -31,6 +32,9 @@ class RegisterActivity : AppCompatActivity() {
         mQueue = Volley.newRequestQueue(this)
         //requestInfo()
 
+        id.addTextChangedListener {
+            check=10
+        }
         checkbutton.setOnClickListener {
             check=0
             for (i in 0 until info.size) {
@@ -73,15 +77,15 @@ class RegisterActivity : AppCompatActivity() {
     }
     private fun requestInfo() {
         val request = JsonArrayRequest(
-            Request.Method.POST,
-            url,
-            null,
-            {
-                //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-            },
-            {
-                Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-            }
+                Request.Method.POST,
+                url,
+                null,
+                {
+                    //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                },
+                {
+                    Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                }
         )
         request.tag = "VolleyRequest"
         mQueue.add(request)
