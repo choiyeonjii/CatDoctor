@@ -31,7 +31,7 @@ import java.io.Serializable
 
 
 class LoginActivity : AppCompatActivity() {
-    val url = "http://192.168.0.6:8080/user"
+    val url = "http://192.168.0.102:8080/user"
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -57,7 +57,11 @@ class LoginActivity : AppCompatActivity() {
 
         kakao= prefs.getInt("kakao", 0)
         normal= prefs.getInt("normal", 0)
-
+        auth = Firebase.auth
+        val user = auth.currentUser
+        if(user!=null){
+            google=1
+        }
         Log.i("LoginActivity: kakao", kakao.toString())
         Log.i("google", google.toString())
         Log.i("normal", normal.toString())
@@ -82,11 +86,11 @@ class LoginActivity : AppCompatActivity() {
 
         // 로그인 공통 callback 구성
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
         googleSignInClient=GoogleSignIn.getClient(this,gso)
-        auth = Firebase.auth
+
 
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
@@ -176,18 +180,19 @@ class LoginActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(GOOGLE_TAG, "signInWithCredential:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(GOOGLE_TAG, "signInWithCredential:failure", task.exception)
-                    updateUI(null)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(GOOGLE_TAG, "signInWithCredential:success")
+                        val user = auth.currentUser
+                        google+=1
+                        updateUI(user)
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(GOOGLE_TAG, "signInWithCredential:failure", task.exception)
+                        updateUI(null)
+                    }
                 }
-            }
     }
     // [END auth_with_google]
 
@@ -219,17 +224,17 @@ class LoginActivity : AppCompatActivity() {
 
     private fun requestInfo() {
         val request = JsonArrayRequest(
-            Request.Method.GET,
-            url,
-            null,
-            {
-                //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-                info.clear()
-                parseJson(it)
-            },
-            {
-                Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-            }
+                Request.Method.GET,
+                url,
+                null,
+                {
+                    //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                    info.clear()
+                    parseJson(it)
+                },
+                {
+                    Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                }
         )
         request.tag = "VolleyRequest"
         mQueue.add(request)
