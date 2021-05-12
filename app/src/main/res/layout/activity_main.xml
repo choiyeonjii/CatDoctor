@@ -8,10 +8,9 @@
 
     <Button
         android:id="@+id/diagnose_btn"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Diagnose"
-        android:textSize="20dp"
         android:textColor="@android:color/black"
         android:backgroundTint="@color/pink"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,10 +21,9 @@
 
     <Button
         android:id="@+id/mypage_btn"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Mypage"
-        android:textSize="20dp"
         android:textColor="@android:color/black"
         android:backgroundTint="@color/pink"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,15 +31,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txResult" />
 
-
     <TextView
         android:id="@+id/txResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="메인 화면"
+        android:text="Hello World!"
         android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
