@@ -4,30 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MypageActivity">
 
     <Button
-        android:id="@+id/diagnose_btn"
+        android:id="@+id/logout_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Diagnose"
+        android:text="로그아웃"
         android:textColor="@android:color/black"
         android:backgroundTint="@color/pink"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/mypage_btn"
+        app:layout_constraintRight_toLeftOf="@id/kakao_signout_btn"
         app:layout_constraintTop_toBottomOf="@+id/txResult" />
 
 
     <Button
-        android:id="@+id/mypage_btn"
+        android:id="@+id/kakao_signout_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mypage"
+        android:text="회원탈퇴"
         android:textColor="@android:color/black"
         android:backgroundTint="@color/pink"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/diagnose_btn"
+        app:layout_constraintLeft_toRightOf="@id/logout_btn"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txResult" />
 
