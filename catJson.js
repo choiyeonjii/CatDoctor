@@ -38,6 +38,15 @@ app.get('/symptom', (req, res) => {
 	});
 });
 
+app.get('/symptom_distinct', (req, res) => {
+	var query = `SELECT distinct symptom_classify FROM symptom`;
+	dbc.query(query, (err, result, fields)=> {
+		if (err) return console.log(err);
+		res.send(result);
+	});
+});
+
+
 app.get('/user', (req, res)=>{
 	var query = 'SELECT * FROM user';
 	dbc.query(query, (err, result, fields)=>{
