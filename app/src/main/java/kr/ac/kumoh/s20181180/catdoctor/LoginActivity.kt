@@ -28,7 +28,7 @@ import java.io.Serializable
 
 
 class LoginActivity : AppCompatActivity() {
-    val url = "http://192.168.0.102:8080/user"
+    val url = "http://192.168.0.12:8080/user"
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
