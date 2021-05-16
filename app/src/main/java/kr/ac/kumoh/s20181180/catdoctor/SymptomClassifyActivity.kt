@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_symptomclassify.*
-import kr.ac.kumoh.s20181180.catdoctor.DiagnoseViewModel.Companion.CLASSIFY
+import kr.ac.kumoh.s20181180.catdoctor.SymptomClassifyViewModel.Companion.CLASSIFY
 
 class SymptomClassifyActivity : AppCompatActivity() {
 
-    private lateinit var model: DiagnoseViewModel
-    private val mAdapter = SymptomAdapter()
+    private lateinit var model: SymptomClassifyViewModel
+    private val mAdapter = SymptomClassifyAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,19 +32,19 @@ class SymptomClassifyActivity : AppCompatActivity() {
 
         model = ViewModelProvider(this,
                 ViewModelProvider.AndroidViewModelFactory(application))
-                .get(DiagnoseViewModel::class.java)
+                .get(SymptomClassifyViewModel::class.java)
 
-        model.list1.observe(this, Observer<ArrayList<String>> {
+        model.list.observe(this, Observer<ArrayList<String>> {
             mAdapter.notifyDataSetChanged()
         })
 
         model.requestSymptomClassify()
     }
 
-    inner class SymptomAdapter: RecyclerView.Adapter<SymptomAdapter.ViewHolder>() {
+    inner class SymptomClassifyAdapter: RecyclerView.Adapter<SymptomClassifyAdapter.ViewHolder>() {
 
         inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {
-            val txText1: TextView
+                    val txText1: TextView
 
             constructor(root: View) :super(root) {
                 root.setOnClickListener(this)
@@ -61,7 +61,7 @@ class SymptomClassifyActivity : AppCompatActivity() {
             return model.getSymptomClassifySize()
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SymptomAdapter.ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SymptomClassifyAdapter.ViewHolder {
             val view = layoutInflater.inflate(
                     R.layout.item_symptomclassify,
                     parent,
@@ -69,7 +69,7 @@ class SymptomClassifyActivity : AppCompatActivity() {
             return ViewHolder(view)
         }
 
-        override fun onBindViewHolder(holder: SymptomAdapter.ViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: SymptomClassifyAdapter.ViewHolder, position: Int) {
             holder.txText1.text = model.getSymptomClassify(position)
         }
     }
