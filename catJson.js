@@ -80,7 +80,6 @@ app.post('/insert', (req, res) => {
 		res.send(str)
 	});
 })
-
 function hasJongsung(str) {
 	//var jong = String.fromCharCode(str.charCodeAt(str.length - 1));
 	//console.log(jong);
