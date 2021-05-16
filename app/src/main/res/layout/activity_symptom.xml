@@ -7,7 +7,7 @@
     tools:context=".SymptomActivity">
 
     <TextView
-        android:id="@+id/textview"
+        android:id="@+id/symptomTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
@@ -22,10 +22,21 @@
         android:id="@+id/lsResultSymptom"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/symBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/symptomTextView" />
+
+    <Button
+        android:id="@+id/symBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="선택"
+        android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview" />
+        app:layout_constraintTop_toBottomOf="@id/lsResultSymptom" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

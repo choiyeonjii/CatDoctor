@@ -15,11 +15,13 @@ import org.json.JSONObject
 
 class SymptomViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
+        const val SYMPTOM = "Symptom"
         const val QUEUE_TAG = "VolleyRequest"
     }
     private lateinit var mQueue: RequestQueue
 
     data class Symptom (var id: Int, var classify: String, var code: String, var name: String)
+
     val list = MutableLiveData<ArrayList<Symptom>>()
     private val symptom = ArrayList<Symptom>()
 
@@ -52,6 +54,7 @@ class SymptomViewModel(application: Application) : AndroidViewModel(application)
         mQueue.add(request)
     }
 
+    fun getSymptom() = symptom
 
     fun getSymptom(i: Int) = symptom[i]
 

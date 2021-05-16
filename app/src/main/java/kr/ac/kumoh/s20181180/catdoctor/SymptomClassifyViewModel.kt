@@ -37,13 +37,13 @@ class SymptomClassifyViewModel(application: Application) : AndroidViewModel(appl
                 url,
                 null,
                 {
-                    Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                    //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
                     symptomclassify.clear()
                     parseJson(it)
                     list.value = symptomclassify
                 },
                 {
-                    Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                    //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
                 }
         )
 

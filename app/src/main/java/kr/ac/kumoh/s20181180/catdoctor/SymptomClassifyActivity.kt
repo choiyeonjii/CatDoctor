@@ -1,11 +1,15 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Color.argb
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -18,6 +22,7 @@ class SymptomClassifyActivity : AppCompatActivity() {
 
     private lateinit var model: SymptomClassifyViewModel
     private val mAdapter = SymptomClassifyAdapter()
+    private val selectClassify = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,25 +46,37 @@ class SymptomClassifyActivity : AppCompatActivity() {
         model.requestSymptomClassify()
 
         symclassifyBtn.setOnClickListener {
-            val intent = Intent(this@SymptomClassifyActivity, SymptomActivity::class.java)
-            startActivity(intent)
+            if (selectClassify.size != 0) {
+                val intent = Intent(this, SymptomActivity::class.java)
+                intent.putExtra(CLASSIFY, selectClassify)
+                startActivity(intent)
+            }
+            else
+                Toast.makeText(getApplication(), "카테고리를 선택해주세요.", Toast.LENGTH_LONG).show()
         }
     }
 
     inner class SymptomClassifyAdapter: RecyclerView.Adapter<SymptomClassifyAdapter.ViewHolder>() {
 
         inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {
-                    val txText1: TextView
+            val txText1: TextView
 
             constructor(root: View) :super(root) {
                 root.setOnClickListener(this)
                 txText1 = itemView.findViewById<TextView>(R.id.text1)
+                txText1.setTag("unselected")
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
-
-//                val intent = Intent(this@SymptomClassifyActivity, SymptomActivity::class.java)
-//                intent.putExtra(CLASSIFY, model.getSymptomClassify(adapterPosition))
-//                startActivity(intent)
+                if (txText1.getTag() == "unselected") {
+                    txText1.setBackgroundColor(Color.parseColor("#FFE4E1"))
+                    txText1.setTag("selected")
+                    selectClassify.add(model.getSymptomClassify(adapterPosition))
+                }
+                else {
+                    txText1.setBackgroundColor(Color.WHITE)
+                    txText1.setTag("unselected")
+                    selectClassify.remove(model.getSymptomClassify(adapterPosition))
+                }
             }
         }
 
@@ -77,6 +94,7 @@ class SymptomClassifyActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: SymptomClassifyAdapter.ViewHolder, position: Int) {
             holder.txText1.text = model.getSymptomClassify(position)
+
         }
     }
 }
