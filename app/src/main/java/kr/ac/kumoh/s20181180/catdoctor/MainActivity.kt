@@ -25,6 +25,10 @@ class MainActivity : AppCompatActivity() {
         google = intent.getIntExtra("google", google)
         normal = intent.getIntExtra("normal", normal)
 
+        diagnose_btn.setOnClickListener {
+            startActivity(Intent(this, DiagnoseActivity::class.java))
+        }
+
         mypage_btn.setOnClickListener {
             intent = Intent(this, MypageActivity::class.java)
             intent.putExtra("kakao", kakao)

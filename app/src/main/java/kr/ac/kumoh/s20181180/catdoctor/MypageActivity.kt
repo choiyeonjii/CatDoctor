@@ -20,11 +20,6 @@ import kotlinx.android.synthetic.main.activity_main.txResult
 import kotlinx.android.synthetic.main.activity_mypage.*
 
 class MypageActivity : AppCompatActivity() {
-    companion object {
-        const val QUEUE_TAG = "VolleyRequest"
-    }
-
-    private lateinit var mQueue: RequestQueue
     private var kakao=0
     private var google=0
     private var normal=0
@@ -38,7 +33,7 @@ class MypageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mypage)
-        mQueue = Volley.newRequestQueue(this)
+
 
         prefs = this.getSharedPreferences("Prefs", 0)
         editor = prefs.edit()
@@ -121,29 +116,4 @@ class MypageActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        mQueue.cancelAll(QUEUE_TAG)
-    }
-
-    private fun requestGundam() {
-        // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        val url = "http://192.168.0.102:8080/symptom"
-
-        val request = JsonArrayRequest(
-                Request.Method.GET,
-                url,
-                null,
-                {
-                    txResult.text = it.toString()
-                },
-                {
-                    Toast.makeText(this, it.toString(), Toast.LENGTH_LONG).show()
-                    txResult.text = it.toString()
-                }
-        )
-
-        request.tag = QUEUE_TAG
-        mQueue.add(request)
-    }
 }
