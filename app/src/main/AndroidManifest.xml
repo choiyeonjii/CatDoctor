@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CatDoctor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SymptomActivity"></activity>
+        <activity android:name=".DiagnoseActivity"></activity>
+        <activity android:name=".SymptomActivity" />
         <activity android:name=".SymptomClassifyActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
