@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         normal = intent.getIntExtra("normal", normal)
 
         diagnose_btn.setOnClickListener {
-            startActivity(Intent(this, DiagnoseActivity::class.java))
+            startActivity(Intent(this, SymptomClassifyActivity::class.java))
         }
 
         mypage_btn.setOnClickListener {

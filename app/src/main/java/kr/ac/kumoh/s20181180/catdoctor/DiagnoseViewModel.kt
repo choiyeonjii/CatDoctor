@@ -1,8 +1,6 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.Request
@@ -15,6 +13,7 @@ import org.json.JSONObject
 
 class DiagnoseViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
+        const val CLASSIFY = "classify"
         const val QUEUE_TAG1 = "VolleyRequest1"
         const val QUEUE_TAG2 = "VolleyRequest2"
     }
