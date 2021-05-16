@@ -15,6 +15,8 @@ class SymptomViewModel(application: Application) : AndroidViewModel(application)
         const val SYMPTOM = "Symptom"
         const val QUEUE_TAG = "VolleyRequest"
     }
+    val server_url = "http://192.168.0.15:8080"
+
     private lateinit var mQueue: RequestQueue
 
     data class Symptom (var id: Int, var classify: String, var code: String, var name: String)
@@ -30,7 +32,7 @@ class SymptomViewModel(application: Application) : AndroidViewModel(application)
 
     fun requestSymptom(classify: String) {
         // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        val url = "http://192.168.0.12:8080/symptom_classify?symptom_classify='${classify}'"
+        val url = "$server_url/symptom_classify?symptom_classify='${classify}'"
 
         val request = JsonArrayRequest(
                 Request.Method.GET,
@@ -48,8 +50,6 @@ class SymptomViewModel(application: Application) : AndroidViewModel(application)
         request.tag = QUEUE_TAG
         mQueue.add(request)
     }
-
-    fun getSymptom() = symptom
 
     fun getSymptom(i: Int) = symptom[i]
 
