@@ -38,6 +38,14 @@ app.get('/symptom', (req, res) => {
 	});
 });
 
+app.get('/symptom_classify', (req, res) => {
+	var query = `SELECT * FROM symptom WHERE symptom_classify=${req.query.symptom_classify}`;
+	dbc.query(query, (err, result, fields) => {
+		if (err) return console.log(err);
+		res.send(result);
+	});
+});
+
 app.get('/symptom_distinct', (req, res) => {
 	var query = `SELECT distinct symptom_classify, image FROM symptom`;
 	dbc.query(query, (err, result, fields) => {
