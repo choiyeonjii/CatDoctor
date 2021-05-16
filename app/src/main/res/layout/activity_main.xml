@@ -1,47 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/diagnose_btn"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:text="Diagnose"
-        android:textSize="20dp"
-        android:textColor="@android:color/black"
-        android:backgroundTint="@color/pink"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/mypage_btn"
-        app:layout_constraintTop_toBottomOf="@+id/txResult" />
-
-
-    <Button
-        android:id="@+id/mypage_btn"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:text="Mypage"
-        android:textSize="20dp"
-        android:textColor="@android:color/black"
-        android:backgroundTint="@color/pink"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/diagnose_btn"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txResult" />
-
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/llpink">
 
     <TextView
         android:id="@+id/txResult"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="메인 화면"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="CATDOCTOR"
+        android:textSize="30dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/cat"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="100dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/diagnose_btn"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginRight="20dp"
+            android:drawableTop="@drawable/doctor"
+            android:paddingTop="20dp"
+            android:text="Diagnose"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="20dp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="30dp" />
+
+        <Button
+            android:id="@+id/mypage_btn"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="20dp"
+            android:drawableTop="@drawable/happy"
+            android:paddingTop="20dp"
+            android:text="Mypage"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="20dp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="30dp" />
+    </LinearLayout>
+
+</LinearLayout>

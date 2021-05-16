@@ -17,7 +17,7 @@ import org.json.JSONObject
 
 
 class RegisterActivity : AppCompatActivity() {
-    val url = "http://192.168.0.102:8080/insert"
+    val url = "http://192.168.0.12:8080/insert"
     private var check=0
     private var able=0
     private lateinit var mQueue: RequestQueue

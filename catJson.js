@@ -10,10 +10,10 @@ app.listen('8080', () => {
 });
 
 var dbc = mariadb.createConnection({
-    host: "localhost",
-    database: "CatDoctor",
-    user: "root",
-    password: "mariadb"
+	host: "localhost",
+	database: "CatDoctor",
+	user: "root",
+	password: "mint8120"
 });
 
 dbc.connect((err) => {
@@ -24,7 +24,7 @@ dbc.connect((err) => {
 
 app.get('/disease', (req, res) => {
 	var query = `SELECT * FROM disease`;
-	dbc.query(query, (err, result, fields)=> {
+	dbc.query(query, (err, result, fields) => {
 		if (err) return console.log(err);
 		res.send(result);
 	});
@@ -32,24 +32,27 @@ app.get('/disease', (req, res) => {
 
 app.get('/symptom', (req, res) => {
 	var query = `SELECT * FROM symptom`;
-	dbc.query(query, (err, result, fields)=> {
+	dbc.query(query, (err, result, fields) => {
 		if (err) return console.log(err);
 		res.send(result);
 	});
 });
 
 app.get('/symptom_distinct', (req, res) => {
-	var query = `SELECT distinct symptom_classify FROM symptom`;
-	dbc.query(query, (err, result, fields)=> {
+	var query = `SELECT distinct symptom_classify, image FROM symptom`;
+	dbc.query(query, (err, result, fields) => {
 		if (err) return console.log(err);
 		res.send(result);
 	});
 });
 
 
-app.get('/user', (req, res)=>{
+app.use('/image', express.static('images'));
+app.use(express.urlencoded());
+
+app.get('/user', (req, res) => {
 	var query = 'SELECT * FROM user';
-	dbc.query(query, (err, result, fields)=>{
+	dbc.query(query, (err, result, fields) => {
 		if (err) return console.log(err);
 		res.send(result);
 	});
@@ -59,12 +62,12 @@ app.post('/insert', (req, res) => {
 	//console.log(req.body.name);
 	var query = `INSERT INTO user VALUES (NULL, "${req.body.user_id}", "${req.body.password}", "${req.body.name}", "${req.body.nickname}")`;
 	//console.log(query);
-	dbc.query(query, (err, result, fields)=> {
+	dbc.query(query, (err, result, fields) => {
 		if (err) return console.log(err);
 
 		//res.send(result);
 		var str = req.body.name;
-		str += hasJongsung(req.body.name)? "을" : "를";
+		str += hasJongsung(req.body.name) ? "을" : "를";
 		str += " 추가했습니다.";
 		res.send(str)
 	});
@@ -74,5 +77,5 @@ function hasJongsung(str) {
 	//var jong = String.fromCharCode(str.charCodeAt(str.length - 1));
 	//console.log(jong);
 	var jong = str.charCodeAt(str.length - 1);
-	return ((jong - 44032 ) % 28 == 0)? false : true;
+	return ((jong - 44032) % 28 == 0) ? false : true;
 }
