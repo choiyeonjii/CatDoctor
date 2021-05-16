@@ -1,5 +1,6 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -10,16 +11,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_diagnose.*
+import kotlinx.android.synthetic.main.activity_symptomclassify.*
+import kr.ac.kumoh.s20181180.catdoctor.DiagnoseViewModel.Companion.CLASSIFY
 
-class DiagnoseActivity : AppCompatActivity() {
+class SymptomClassifyActivity : AppCompatActivity() {
 
     private lateinit var model: DiagnoseViewModel
     private val mAdapter = SymptomAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_diagnose)
+        setContentView(R.layout.activity_symptomclassify)
 
         lsResult.apply {
             layoutManager = LinearLayoutManager(applicationContext)
@@ -41,8 +43,18 @@ class DiagnoseActivity : AppCompatActivity() {
 
     inner class SymptomAdapter: RecyclerView.Adapter<SymptomAdapter.ViewHolder>() {
 
-        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val txText1: TextView = itemView.findViewById<TextView>(android.R.id.text1)
+        inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {
+            val txText1: TextView
+
+            constructor(root: View) :super(root) {
+                root.setOnClickListener(this)
+                txText1 = itemView.findViewById<TextView>(R.id.text1)
+            }
+            override fun onClick(v: View?) { //리스트 아이템 클릭 시
+                val intent = Intent(this@SymptomClassifyActivity, SymptomActivity::class.java)
+                intent.putExtra(CLASSIFY, model.getSymptomClassify(adapterPosition))
+                startActivity(intent)
+            }
         }
 
         override fun getItemCount(): Int {
@@ -51,7 +63,7 @@ class DiagnoseActivity : AppCompatActivity() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SymptomAdapter.ViewHolder {
             val view = layoutInflater.inflate(
-                    android.R.layout.simple_list_item_1,
+                    R.layout.item_symptomclassify,
                     parent,
                     false)
             return ViewHolder(view)
