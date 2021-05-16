@@ -39,6 +39,11 @@ class SymptomClassifyActivity : AppCompatActivity() {
         })
 
         model.requestSymptomClassify()
+
+        symclassifyBtn.setOnClickListener {
+            val intent = Intent(this@SymptomClassifyActivity, SymptomActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     inner class SymptomClassifyAdapter: RecyclerView.Adapter<SymptomClassifyAdapter.ViewHolder>() {
@@ -51,9 +56,10 @@ class SymptomClassifyActivity : AppCompatActivity() {
                 txText1 = itemView.findViewById<TextView>(R.id.text1)
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
-                val intent = Intent(this@SymptomClassifyActivity, SymptomActivity::class.java)
-                intent.putExtra(CLASSIFY, model.getSymptomClassify(adapterPosition))
-                startActivity(intent)
+
+//                val intent = Intent(this@SymptomClassifyActivity, SymptomActivity::class.java)
+//                intent.putExtra(CLASSIFY, model.getSymptomClassify(adapterPosition))
+//                startActivity(intent)
             }
         }
 

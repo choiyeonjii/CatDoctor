@@ -53,6 +53,7 @@ class SymptomActivity : AppCompatActivity() {
                 txText1 = itemView.findViewById<TextView>(android.R.id.text1)
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
+
 //                val intent = Intent(this@SymptomActivity, SymptomActivity::class.java)
 //                intent.putExtra(DiagnoseViewModel.CLASSIFY, model.getSymptomClassify(adapterPosition))
 //                startActivity(intent)
