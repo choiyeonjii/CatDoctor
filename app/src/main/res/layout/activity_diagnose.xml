@@ -7,15 +7,25 @@
     tools:context=".DiagnoseActivity">
 
     <TextView
-        android:id="@+id/symptomTextView"
+        android:id="@+id/diagnoseTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
         android:gravity="center"
         android:text="진단하기 결과 출력하기"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/lsResultDiagnose"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lsResultDiagnose"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/diagnoseTextView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
