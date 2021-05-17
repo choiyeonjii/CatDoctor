@@ -1,5 +1,6 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,8 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_diagnose.*
 import kotlinx.android.synthetic.main.activity_symptom.*
+import kr.ac.kumoh.s20181180.catdoctor.DiagnoseViewModel.Companion.DISEASE_ID
+import kr.ac.kumoh.s20181180.catdoctor.DiagnoseViewModel.Companion.SYMPTOM_ID
 import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import kr.ac.kumoh.s20181180.catdoctor.SymptomViewModel.Companion.SYMPTOM
 import org.json.JSONArray
@@ -67,7 +70,10 @@ class DiagnoseActivity : AppCompatActivity() {
 //                txText1.setTag("unselected")
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
-
+                val intent = Intent(this@DiagnoseActivity, DiseaseDetailActivity::class.java)
+                intent.putExtra(DISEASE_ID, model.getDisease(adapterPosition).id.toString())
+                intent.putExtra(SYMPTOM_ID, symptom_id)
+                startActivity(intent)
             }
         }
         override fun getItemCount(): Int {

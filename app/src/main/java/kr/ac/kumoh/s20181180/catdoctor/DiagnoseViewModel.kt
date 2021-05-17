@@ -15,6 +15,8 @@ import org.json.JSONObject
 class DiagnoseViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val QUEUE_TAG = "VolleyRequest"
+        const val DISEASE_ID = "DiseaseId"
+        const val SYMPTOM_ID = "SymptomId"
     }
 
     private lateinit var mQueue: RequestQueue
