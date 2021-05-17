@@ -51,6 +51,7 @@ class SymptomActivity : AppCompatActivity() {
 
         symptomTextView.setText("'" + classify[count] + "'의 증상을 선택해주세요.")
         model.requestSymptom(classify[count++])
+
         symBtn.setOnClickListener {
             if (count < classify.size) {
                 model = ViewModelProvider(this,
@@ -72,21 +73,21 @@ class SymptomActivity : AppCompatActivity() {
     // TODO : RecyclerView로 구현했더니, 증상 선택하면 스크롤 후 아래 증상이 미리 선택되어있는 문제 발생
     inner class SymptomAdapter: RecyclerView.Adapter<SymptomAdapter.ViewHolder>() {
         inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {
-            val txText2: TextView
+            val txText1: TextView
             constructor(root: View) :super(root) {
                 root.setOnClickListener(this)
-                txText2 = itemView.findViewById<TextView>(R.id.text2)
-                txText2.setTag("unselected")
+                txText1 = itemView.findViewById<TextView>(R.id.text2)
+                txText1.setTag("unselected")
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
-                if (txText2.getTag() == "unselected") {
-                    txText2.setBackgroundColor(Color.parseColor("#FFE4E1"))
-                    txText2.setTag("selected")
+                if (txText1.getTag() == "unselected") {
+                    txText1.setBackgroundColor(Color.parseColor("#FFE4E1"))
+                    txText1.setTag("selected")
                     selectSymptom.add(model.getSymptom(adapterPosition).id)
                 }
                 else {
-                    txText2.setBackgroundColor(Color.WHITE)
-                    txText2.setTag("unselected")
+                    txText1.setBackgroundColor(Color.WHITE)
+                    txText1.setTag("unselected")
                     selectSymptom.remove(model.getSymptom(adapterPosition).id)
                 }
             }
@@ -102,7 +103,7 @@ class SymptomActivity : AppCompatActivity() {
             return ViewHolder(view)
         }
         override fun onBindViewHolder(holder: SymptomAdapter.ViewHolder, position: Int) {
-            holder.txText2.text = model.getSymptom(position).name
+            holder.txText1.text = model.getSymptom(position).name
         }
     }
 }

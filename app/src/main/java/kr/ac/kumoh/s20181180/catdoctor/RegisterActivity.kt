@@ -12,12 +12,13 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
+import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import org.json.JSONArray
 import org.json.JSONObject
 
 
 class RegisterActivity : AppCompatActivity() {
-    val url = "http://192.168.0.12:8080/insert"
+    val url = "$SERVER_URL/insert"
     private var check=0
     private var able=0
     private lateinit var mQueue: RequestQueue

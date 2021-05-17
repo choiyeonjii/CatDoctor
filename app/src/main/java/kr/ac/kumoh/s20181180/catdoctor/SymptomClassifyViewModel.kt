@@ -12,19 +12,19 @@ import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_main.*
+import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URLEncoder
 import kotlin.math.log
 
 
-// 추가되는부분
+
 class SymptomClassifyViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val CLASSIFY = "classify"
         const val QUEUE_TAG = "VolleyRequest"
     }
-    val server_url = "http://192.168.0.15:8080"
 
     private lateinit var mQueue: RequestQueue
 
@@ -40,8 +40,7 @@ class SymptomClassifyViewModel(application: Application) : AndroidViewModel(appl
     }
 
     fun requestSymptomClassify() {
-        // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        val url = "$server_url/symptom_distinct"
+        val url = "$SERVER_URL/symptom_distinct"
 
         val request = JsonArrayRequest(
             Request.Method.GET,
@@ -81,7 +80,7 @@ class SymptomClassifyViewModel(application: Application) : AndroidViewModel(appl
             })
     }
 
-    fun getImageUrl(i: Int): String = "$server_url/image/" + symptomclassify[i].image
+    fun getImageUrl(i: Int): String = "$SERVER_URL/image/" + symptomclassify[i].image
 
     fun getSymptomClassify(i: Int) = symptomclassify[i]
 
@@ -97,7 +96,7 @@ class SymptomClassifyViewModel(application: Application) : AndroidViewModel(appl
             val item: JSONObject = items[i] as JSONObject
             val classify = item.getString("symptom_classify")
             val image = item.getString("image")
-            symptomclassify.add(SymptomClassifyViewModel.SymptomClassify(classify, image))
+            symptomclassify.add(SymptomClassify(classify, image))
             Log.i("symptomclassify", symptomclassify.toString())
         }
     }

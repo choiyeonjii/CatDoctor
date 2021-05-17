@@ -7,6 +7,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
+import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -15,14 +16,13 @@ class SymptomViewModel(application: Application) : AndroidViewModel(application)
         const val SYMPTOM = "Symptom"
         const val QUEUE_TAG = "VolleyRequest"
     }
-    val server_url = "http://192.168.0.15:8080"
 
     private lateinit var mQueue: RequestQueue
 
     data class Symptom (var id: Int, var classify: String, var code: String, var name: String)
 
     val list = MutableLiveData<ArrayList<Symptom>>()
-    private val symptom = ArrayList<Symptom>()
+    val symptom = ArrayList<Symptom>()
 
 
     init {
@@ -32,7 +32,7 @@ class SymptomViewModel(application: Application) : AndroidViewModel(application)
 
     fun requestSymptom(classify: String) {
         // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        val url = "$server_url/symptom_classify?symptom_classify='${classify}'"
+        val url = "$SERVER_URL/symptom_classify?symptom_classify='${classify}'"
 
         val request = JsonArrayRequest(
                 Request.Method.GET,

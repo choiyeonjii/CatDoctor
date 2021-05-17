@@ -22,13 +22,14 @@ import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.activity_login.*
+import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
 
 
 class LoginActivity : AppCompatActivity() {
-    val url = "http://192.168.0.12:8080/user"
+    val url = "$SERVER_URL/user"
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient

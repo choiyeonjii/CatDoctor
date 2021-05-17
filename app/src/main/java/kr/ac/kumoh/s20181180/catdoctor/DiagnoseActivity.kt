@@ -6,13 +6,22 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_diagnose.*
+import kotlinx.android.synthetic.main.activity_symptom.*
+import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import kr.ac.kumoh.s20181180.catdoctor.SymptomViewModel.Companion.SYMPTOM
+import org.json.JSONArray
+import org.json.JSONObject
 
 class DiagnoseActivity : AppCompatActivity() {
     private var symptom_id = ArrayList<Int>()
@@ -24,9 +33,8 @@ class DiagnoseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_diagnose)
 
         symptom_id = intent.getIntegerArrayListExtra(SYMPTOM) as ArrayList<Int>
-
-
         Log.i("select_symptom_id", symptom_id.toString())
+
 
         lsResultDiagnose.apply {
             layoutManager = LinearLayoutManager(applicationContext)
@@ -43,19 +51,20 @@ class DiagnoseActivity : AppCompatActivity() {
             mAdapter.notifyDataSetChanged()
         })
 
-
-
-        model.requestDisease(symptom_id)
+        model.requestDiseaseID(symptom_id)
     }
+
+
 
     inner class DiagnoseAdapter: RecyclerView.Adapter<DiagnoseActivity.DiagnoseAdapter.ViewHolder>() {
         inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {
-
+            val txText1: TextView
             val txText2: TextView
             constructor(root: View) :super(root) {
                 root.setOnClickListener(this)
-                txText2 = itemView.findViewById<TextView>(android.R.id.text1)
-                txText2.setTag("unselected")
+                txText1 = itemView.findViewById<TextView>(R.id.diseaseName)
+                txText2 = itemView.findViewById<TextView>(R.id.diseaseDefine)
+//                txText1.setTag("unselected")
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
 
@@ -66,13 +75,14 @@ class DiagnoseActivity : AppCompatActivity() {
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiagnoseActivity.DiagnoseAdapter.ViewHolder {
             val view = layoutInflater.inflate(
-                    android.R.layout.simple_list_item_1,
+                    R.layout.item_diagnose,
                     parent,
                     false)
             return ViewHolder(view)
         }
         override fun onBindViewHolder(holder: DiagnoseActivity.DiagnoseAdapter.ViewHolder, position: Int) {
-            holder.txText2.text = model.getDisease(position).name
+            holder.txText1.text = model.getDisease(position).name
+            holder.txText2.text = model.getDisease(position).define
         }
     }
 }

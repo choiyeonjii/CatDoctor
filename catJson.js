@@ -47,7 +47,7 @@ app.get('/symptom_distinct', (req, res) => {
 });
 
 app.get('/disease_id', (req, res) => {
-	var query = `SELECT disease.id FROM disease inner join disease_symptom on disease_symptom.symptom_id=${req.query.symptom_id} and disease_symptom.disease_id=disease.id`;
+	var query = `SELECT disease.id FROM disease inner join disease_symptom on disease_symptom.symptom_id in ${req.query.symptom_id} and disease_symptom.disease_id=disease.id`;
 	dbc.query(query, (err, result, fields)=> {
 		if (err) return;
 		res.send(result);
@@ -55,7 +55,7 @@ app.get('/disease_id', (req, res) => {
 });
 
 app.get('/disease', (req, res) => {
-	var query = `SELECT * FROM disease where id=${req.query.id}`;
+	var query = `SELECT * FROM disease where id in ${req.query.id}`;
 	dbc.query(query, (err, result, fields)=> {
 		if (err) return console.log(err);
 		res.send(result);

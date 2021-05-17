@@ -8,76 +8,84 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
+import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import org.json.JSONArray
 import org.json.JSONObject
 
-class DiagnoseViewModel(application: Application) : AndroidViewModel(application)  {
+class DiagnoseViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val QUEUE_TAG = "VolleyRequest"
     }
-    val server_url = "http://192.168.0.15:8080"
 
     private lateinit var mQueue: RequestQueue
 
-    data class Disease (var id: Int, var name: String, var define: String, var cause: String, var treatment: String, var prenention: String, var prognosis: String, var advice: String)
+    data class Disease(var id: Int, var name: String, var define: String, var cause: String, var treatment: String, var prenention: String, var prognosis: String, var advice: String)
 
 
     val list = MutableLiveData<ArrayList<Disease>>()
     private val disease = ArrayList<Disease>()
 
-    private val disease_id = ArrayList<Int>()
+    var disease_id = ArrayList<Int>()
+
 
     init {
         list.value = disease
         mQueue = Volley.newRequestQueue(application)
     }
 
-    fun requestDisease(symptom_id: ArrayList<Int>) {
-        requestDiseaseID(symptom_id)
+    fun requestDisease(disease_id: ArrayList<Int>) {
+        var temp = disease_id.joinToString(
+                prefix = "(",
+                separator = ", ",
+                postfix = ")"
+        )
         Log.i("last_disease_id", disease_id.toString())
 
-        for (i in 0 until disease_id.size) {
-            val url = "$server_url/disease?id=${disease_id[i]}"
+        val url = "$SERVER_URL/disease?id=${temp}"
+        Log.i("disease_url", url)
 
-            val request = JsonArrayRequest(
-                    Request.Method.GET,
-                    url,
-                    null,
-                    {
-                        disease.clear()
-                        parseJson_Disease(it)
-                        list.value = disease
-                    },
-                    {
-                    }
-            )
-            request.tag = QUEUE_TAG
-            mQueue.add(request)
-        }
+        val request = JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                {
+                    disease.clear()
+                    parseJson_Disease(it)
+                    list.value = disease
+                },
+                {
+                }
+        )
+        request.tag = QUEUE_TAG
+        mQueue.add(request)
     }
 
     fun requestDiseaseID(symptom_id: ArrayList<Int>) {
-        // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        disease_id.clear()
-        for (i in 0 until symptom_id.size) {
-            val url = "$server_url/disease_id?symptom_id=${symptom_id[i]}"
-            Log.i("symptom_id", symptom_id[i].toString())
-            Log.i("disease_url", url)
-
-            val request = JsonArrayRequest(
-                    Request.Method.GET,
-                    url,
-                    null,
-                    {
-                        parseJson_DiseaseId(it)
-                    },
-                    {
-                    }
-            )
-            request.tag = QUEUE_TAG
-            mQueue.add(request)
-        }
+        var temp = symptom_id.joinToString(
+                prefix = "(",
+                separator = ", ",
+                postfix = ")"
+        )
+        val url = "$SERVER_URL/disease_id?symptom_id=${temp}"
+        Log.i("disease_url", url)
+        val request = JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                {
+                    disease_id.clear()
+                    parseJson_DiseaseId(it)
+                },
+                {
+                }
+        )
+        request.tag = QUEUE_TAG
+        mQueue.add(request)
     }
+
+    fun getDiseaseId(i: Int) = disease_id[i]
+
+    fun getDiseaseIdSize() = disease_id.size
 
     fun getDisease(i: Int) = disease[i]
 
@@ -110,8 +118,8 @@ class DiagnoseViewModel(application: Application) : AndroidViewModel(application
             val id = item.getInt("id")
             disease_id.add(id)
         }
-        Log.i("select_disease_id_size", items.length().toString())
-        Log.i("select_disease_id33", disease_id.toString())
-        Log.i("select_disease_id44", disease_id.size.toString())
+        Log.i("disease_id", disease_id.toString())
+        Log.i("disease_id_size_sum", disease_id.size.toString())
+        requestDisease(disease_id)
     }
 }
