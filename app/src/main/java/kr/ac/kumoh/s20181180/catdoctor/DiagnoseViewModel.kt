@@ -11,6 +11,10 @@ import com.android.volley.toolbox.Volley
 import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class DiagnoseViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
@@ -23,11 +27,13 @@ class DiagnoseViewModel(application: Application) : AndroidViewModel(application
 
     data class Disease(var id: Int, var name: String, var define: String, var cause: String, var treatment: String, var prenention: String, var prognosis: String, var advice: String)
 
-
     val list = MutableLiveData<ArrayList<Disease>>()
     private val disease = ArrayList<Disease>()
 
     var disease_id = ArrayList<Int>()
+
+    var diseaseMap = HashMap<Int, Int>()
+    var keySetList = ArrayList<Int>(diseaseMap.size)
 
 
     init {
@@ -36,10 +42,29 @@ class DiagnoseViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun requestDisease(disease_id: ArrayList<Int>) {
+        disease_id.sort()
+
+        var count: Int = 1
+        for (i in 0 until disease_id.size) {
+            if (i != 0)
+                if (disease_id[i] != disease_id[i-1])
+                    count = 1
+            diseaseMap.put(disease_id[i], count++)
+        }
+        var diseaseSortedMap = diseaseMap.toList().sortedByDescending { (k, v) -> v }.toMap()
+
+        Log.i("diseaseSortedMap", diseaseSortedMap.toString())
+        disease_id.clear()
+
+        for (i in diseaseSortedMap.keys) {
+            if (diseaseSortedMap.get(i)!! > 1) {
+                disease_id.add(i)
+            }
+        }
+
+
         var temp = disease_id.joinToString(
-                prefix = "(",
-                separator = ", ",
-                postfix = ")"
+                separator = ", "
         )
         Log.i("last_disease_id", disease_id.toString())
 
@@ -85,9 +110,6 @@ class DiagnoseViewModel(application: Application) : AndroidViewModel(application
         mQueue.add(request)
     }
 
-    fun getDiseaseId(i: Int) = disease_id[i]
-
-    fun getDiseaseIdSize() = disease_id.size
 
     fun getDisease(i: Int) = disease[i]
 

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CatDoctor</string>
+    <string name="app_name_diagnose">진단하기</string>
+    <string name="app_name_diagnose_result">진단결과</string>
+
     <string name="kakao_app_key">cad309bfb040b22ed4b2a126909f3dc4</string>
 </resources>

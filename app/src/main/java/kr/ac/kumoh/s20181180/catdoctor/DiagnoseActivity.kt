@@ -67,7 +67,6 @@ class DiagnoseActivity : AppCompatActivity() {
                 root.setOnClickListener(this)
                 txText1 = itemView.findViewById<TextView>(R.id.diseaseName)
                 txText2 = itemView.findViewById<TextView>(R.id.diseaseDefine)
-//                txText1.setTag("unselected")
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
                 val intent = Intent(this@DiagnoseActivity, DiseaseDetailActivity::class.java)

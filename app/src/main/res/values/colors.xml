@@ -12,4 +12,5 @@
     <color name="lpink">#FFE3F0</color>
     <color name="llpink">#EDFDF1F7</color>
     <color name="lwhite">#EEFDFAFB</color>
+    <color name="gray">#FFAAAAAA</color>
 </resources>

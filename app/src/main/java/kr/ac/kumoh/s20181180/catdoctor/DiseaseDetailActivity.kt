@@ -102,6 +102,7 @@ class DiseaseDetailActivity : AppCompatActivity() {
         val prevention = item.getString("prevention")
         val prognosis = item.getString("prognosis")
         val advice = item.getString("advice")
+
         diseaseName.text = name
         diseaseDefine.text = define
         diseaseCause.text = cause
@@ -109,6 +110,17 @@ class DiseaseDetailActivity : AppCompatActivity() {
         diseasePrevention.text = prevention
         diseasePrognosis.text = prognosis
         diseaseAdvice.text = advice
+
+        if (cause.trim() == "")
+            diseaseCause.text = "없음"
+        if (treatment.trim() == "")
+            diseaseTreatment.text = "없음"
+        if (prevention.trim() == "")
+            diseasePrevention.text = "없음"
+        if (prognosis.trim() == "")
+            diseasePrognosis.text = "없음"
+        if (advice.trim() == "")
+            diseaseAdvice.text = "없음"
     }
 
     private fun parseJson_Symptom(items: JSONArray) {

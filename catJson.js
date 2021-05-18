@@ -55,7 +55,7 @@ app.get('/disease_id', (req, res) => {
 });
 
 app.get('/symptom_id', (req, res) => {
-	var query = `SELECT symptom.id, symptom.symptom_name FROM symptom inner join disease_symptom on disease_symptom.disease_id in ${req.query.disease_id} and disease_symptom.symptom_id=symptom.id`;
+	var query = `SELECT distinct symptom.id, symptom.symptom_name FROM symptom inner join disease_symptom on disease_symptom.disease_id in ${req.query.disease_id} and disease_symptom.symptom_id=symptom.id`;
 	dbc.query(query, (err, result, fields)=> {
 		if (err) return;
 		res.send(result);
@@ -63,13 +63,12 @@ app.get('/symptom_id', (req, res) => {
 });
 
 app.get('/disease', (req, res) => {
-	var query = `SELECT * FROM disease where id in ${req.query.id}`;
+	var query = `SELECT * FROM disease where id in (${req.query.id}) order by field(id, ${req.query.id})`;
 	dbc.query(query, (err, result, fields)=> {
 		if (err) return console.log(err);
 		res.send(result);
 	});
 });
-
 
 app.use('/image', express.static('images'));
 app.use(express.urlencoded());

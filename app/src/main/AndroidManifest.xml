@@ -14,10 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CatDoctor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DiseaseDetailActivity"></activity>
-        <activity android:name=".DiagnoseActivity" />
-        <activity android:name=".SymptomActivity" />
-        <activity android:name=".SymptomClassifyActivity" />
+        <activity android:name=".DiseaseDetailActivity"
+            android:label="@string/app_name_diagnose_result"/>
+        <activity android:name=".DiagnoseActivity"
+            android:label="@string/app_name_diagnose_result"/>
+        <activity android:name=".SymptomActivity"
+            android:label="@string/app_name_diagnose"/>
+        <activity android:name=".SymptomClassifyActivity"
+            android:label="@string/app_name_diagnose"/>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
