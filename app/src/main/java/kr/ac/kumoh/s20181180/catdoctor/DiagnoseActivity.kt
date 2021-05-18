@@ -87,7 +87,9 @@ class DiagnoseActivity : AppCompatActivity() {
         }
         override fun onBindViewHolder(holder: DiagnoseActivity.DiagnoseAdapter.ViewHolder, position: Int) {
             holder.txText1.text = model.getDisease(position).name
-            holder.txText2.text = model.getDisease(position).define
+            var define = model.getDisease(position).define
+            define = define.replace("\n","")
+            holder.txText2.text = define
         }
     }
 }
