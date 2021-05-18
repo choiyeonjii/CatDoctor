@@ -5,6 +5,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.SparseBooleanArray
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -25,6 +26,7 @@ class SymptomActivity : AppCompatActivity() {
     private val mAdapter = SymptomAdapter()
     private var classify = ArrayList<String>()
     var selectSymptom = ArrayList<Int>()
+    lateinit var selectItems : SparseBooleanArray
     private var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +34,7 @@ class SymptomActivity : AppCompatActivity() {
         setContentView(R.layout.activity_symptom)
 
         classify = intent.getStringArrayListExtra(SymptomClassifyViewModel.CLASSIFY) as ArrayList<String>
+        selectItems = SparseBooleanArray(0)
 
         lsResultSymptom.apply {
             layoutManager = LinearLayoutManager(applicationContext)
@@ -42,8 +45,8 @@ class SymptomActivity : AppCompatActivity() {
 
 
         model = ViewModelProvider(this,
-                ViewModelProvider.AndroidViewModelFactory(application))
-                .get(SymptomViewModel::class.java)
+            ViewModelProvider.AndroidViewModelFactory(application))
+            .get(SymptomViewModel::class.java)
 
         model.list.observe(this, Observer<ArrayList<SymptomViewModel.Symptom>> {
             mAdapter.notifyDataSetChanged()
@@ -51,12 +54,12 @@ class SymptomActivity : AppCompatActivity() {
 
         symptomTextView.setText("'" + classify[count] + "'의 증상을 선택해주세요.")
         model.requestSymptom(classify[count++])
-
         symBtn.setOnClickListener {
             if (count < classify.size) {
+                selectItems = SparseBooleanArray(0)
                 model = ViewModelProvider(this,
-                        ViewModelProvider.AndroidViewModelFactory(application))
-                        .get(SymptomViewModel::class.java)
+                    ViewModelProvider.AndroidViewModelFactory(application))
+                    .get(SymptomViewModel::class.java)
                 model.list.observe(this, Observer<ArrayList<SymptomViewModel.Symptom>> {
                     mAdapter.notifyDataSetChanged()
                 })
@@ -70,25 +73,24 @@ class SymptomActivity : AppCompatActivity() {
             }
         }
     }
-    // TODO : RecyclerView로 구현했더니, 증상 선택하면 스크롤 후 아래 증상이 미리 선택되어있는 문제 발생
+
     inner class SymptomAdapter: RecyclerView.Adapter<SymptomAdapter.ViewHolder>() {
         inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {
             val txText1: TextView
             constructor(root: View) :super(root) {
                 root.setOnClickListener(this)
                 txText1 = itemView.findViewById<TextView>(R.id.text2)
-                txText1.setTag("unselected")
             }
             override fun onClick(v: View?) { //리스트 아이템 클릭 시
-                if (txText1.getTag() == "unselected") {
-                    txText1.setBackgroundColor(Color.parseColor("#FFE4E1"))
-                    txText1.setTag("selected")
-                    selectSymptom.add(model.getSymptom(adapterPosition).id)
+                if (selectItems.get(adapterPosition, false)) {
+                    txText1.setBackgroundColor(Color.WHITE)
+                    selectItems.put(adapterPosition, false)
+                    selectSymptom.remove(model.getSymptom(adapterPosition).id)
                 }
                 else {
-                    txText1.setBackgroundColor(Color.WHITE)
-                    txText1.setTag("unselected")
-                    selectSymptom.remove(model.getSymptom(adapterPosition).id)
+                    txText1.setBackgroundColor(Color.parseColor("#FFE4E1"))
+                    selectItems.put(adapterPosition, true)
+                    selectSymptom.add(model.getSymptom(adapterPosition).id)
                 }
             }
         }
@@ -97,13 +99,18 @@ class SymptomActivity : AppCompatActivity() {
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SymptomAdapter.ViewHolder {
             val view = layoutInflater.inflate(
-                    R.layout.item_symptom,
-                    parent,
-                    false)
+                R.layout.item_symptom,
+                parent,
+                false)
             return ViewHolder(view)
         }
         override fun onBindViewHolder(holder: SymptomAdapter.ViewHolder, position: Int) {
             holder.txText1.text = model.getSymptom(position).name
+
+            if (selectItems.get(position, false))
+                holder.txText1.setBackgroundColor(Color.parseColor("#FFE4E1"))
+            else
+                holder.txText1.setBackgroundColor(Color.WHITE)
         }
     }
 }
