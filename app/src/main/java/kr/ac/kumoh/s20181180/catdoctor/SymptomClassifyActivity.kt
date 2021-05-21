@@ -38,8 +38,8 @@ class SymptomClassifyActivity : AppCompatActivity() {
         }
 
         model = ViewModelProvider(this,
-            ViewModelProvider.AndroidViewModelFactory(application))
-            .get(SymptomClassifyViewModel::class.java)
+                ViewModelProvider.AndroidViewModelFactory(application))
+                .get(SymptomClassifyViewModel::class.java)
 
         model.list.observe(this, Observer<ArrayList<SymptomClassifyViewModel.SymptomClassify>> {
             mAdapter.notifyDataSetChanged()
@@ -93,9 +93,9 @@ class SymptomClassifyActivity : AppCompatActivity() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SymptomClassifyAdapter.ViewHolder {
             val view = layoutInflater.inflate(
-                R.layout.item_symptomclassify,
-                parent,
-                false)
+                    R.layout.item_symptomclassify,
+                    parent,
+                    false)
             return ViewHolder(view)
         }
 

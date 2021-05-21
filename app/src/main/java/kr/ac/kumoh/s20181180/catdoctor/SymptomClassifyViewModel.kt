@@ -32,7 +32,7 @@ class SymptomClassifyViewModel(application: Application) : AndroidViewModel(appl
 
     val list = MutableLiveData<ArrayList<SymptomClassify>>()
     private var symptomclassify = ArrayList<SymptomClassify>()
-    
+
 
     init {
         list.value = symptomclassify
@@ -43,18 +43,18 @@ class SymptomClassifyViewModel(application: Application) : AndroidViewModel(appl
         val url = "$SERVER_URL/symptom_distinct"
 
         val request = JsonArrayRequest(
-            Request.Method.GET,
-            url,
-            null,
-            {
-                //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-                symptomclassify.clear()
-                parseJson(it)
-                list.value = symptomclassify
-            },
-            {
-                //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-            }
+                Request.Method.GET,
+                url,
+                null,
+                {
+                    //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                    symptomclassify.clear()
+                    parseJson(it)
+                    list.value = symptomclassify
+                },
+                {
+                    //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
+                }
         )
 
         request.tag = QUEUE_TAG
@@ -68,16 +68,16 @@ class SymptomClassifyViewModel(application: Application) : AndroidViewModel(appl
         mQueue = Volley.newRequestQueue(application)
 
         imageLoader = ImageLoader(mQueue,
-            object : ImageLoader.ImageCache {
-                private val cache = LruCache<String, Bitmap>(100)
-                override fun getBitmap(url: String): Bitmap? {
-                    return cache.get(url)
-                }
+                object : ImageLoader.ImageCache {
+                    private val cache = LruCache<String, Bitmap>(100)
+                    override fun getBitmap(url: String): Bitmap? {
+                        return cache.get(url)
+                    }
 
-                override fun putBitmap(url: String, bitmap: Bitmap) {
-                    cache.put(url, bitmap)
-                }
-            })
+                    override fun putBitmap(url: String, bitmap: Bitmap) {
+                        cache.put(url, bitmap)
+                    }
+                })
     }
 
     fun getImageUrl(i: Int): String = "$SERVER_URL/image/" + symptomclassify[i].image

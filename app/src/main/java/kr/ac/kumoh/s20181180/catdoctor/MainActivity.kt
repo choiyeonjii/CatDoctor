@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        const val SERVER_URL = "http://192.168.0.15:8080"
+        const val SERVER_URL = "http://192.168.200.104:8080"
     }
 
     private var kakao=0
@@ -35,6 +35,9 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("google", google)
             intent.putExtra("normal", normal)
             startActivity(intent)
+        }
+        hospital_btn.setOnClickListener {
+            startActivity(Intent(this,MapActivity::class.java))
         }
     }
 }

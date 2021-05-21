@@ -58,6 +58,19 @@
             android:textSize="20dp"
             app:backgroundTint="@color/white"
             app:cornerRadius="30dp" />
+
     </LinearLayout>
+    <Button
+        android:id="@+id/hospital_btn"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginLeft="20dp"
+        android:drawableTop="@drawable/hospital"
+        android:paddingTop="20dp"
+        android:text="Hospital"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="20dp"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="30dp" />
 
 </LinearLayout>

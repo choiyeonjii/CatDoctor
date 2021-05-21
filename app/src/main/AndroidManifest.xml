@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".MyApplication"
@@ -14,14 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CatDoctor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DiseaseDetailActivity"
-            android:label="@string/app_name_diagnose_result"/>
-        <activity android:name=".DiagnoseActivity"
-            android:label="@string/app_name_diagnose_result"/>
-        <activity android:name=".SymptomActivity"
-            android:label="@string/app_name_diagnose"/>
-        <activity android:name=".SymptomClassifyActivity"
-            android:label="@string/app_name_diagnose"/>
+        <activity android:name=".MapActivity"></activity>
+        <activity
+            android:name=".DiseaseDetailActivity"
+            android:label="@string/app_name_diagnose_result" />
+        <activity
+            android:name=".DiagnoseActivity"
+            android:label="@string/app_name_diagnose_result" />
+        <activity
+            android:name=".SymptomActivity"
+            android:label="@string/app_name_diagnose" />
+        <activity
+            android:name=".SymptomClassifyActivity"
+            android:label="@string/app_name_diagnose" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,6 +51,10 @@
                     android:scheme="kakaocad309bfb040b22ed4b2a126909f3dc4" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="a30600053de554f5ef0dcb5ecad48c2e" />
     </application>
 
 </manifest>

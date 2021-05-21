@@ -45,8 +45,8 @@ class SymptomActivity : AppCompatActivity() {
 
 
         model = ViewModelProvider(this,
-            ViewModelProvider.AndroidViewModelFactory(application))
-            .get(SymptomViewModel::class.java)
+                ViewModelProvider.AndroidViewModelFactory(application))
+                .get(SymptomViewModel::class.java)
 
         model.list.observe(this, Observer<ArrayList<SymptomViewModel.Symptom>> {
             mAdapter.notifyDataSetChanged()
@@ -58,8 +58,8 @@ class SymptomActivity : AppCompatActivity() {
             if (count < classify.size) {
                 selectItems = SparseBooleanArray(0)
                 model = ViewModelProvider(this,
-                    ViewModelProvider.AndroidViewModelFactory(application))
-                    .get(SymptomViewModel::class.java)
+                        ViewModelProvider.AndroidViewModelFactory(application))
+                        .get(SymptomViewModel::class.java)
                 model.list.observe(this, Observer<ArrayList<SymptomViewModel.Symptom>> {
                     mAdapter.notifyDataSetChanged()
                 })
@@ -73,7 +73,6 @@ class SymptomActivity : AppCompatActivity() {
             }
         }
     }
-
     inner class SymptomAdapter: RecyclerView.Adapter<SymptomAdapter.ViewHolder>() {
         inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {
             val txText1: TextView
@@ -99,14 +98,13 @@ class SymptomActivity : AppCompatActivity() {
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SymptomAdapter.ViewHolder {
             val view = layoutInflater.inflate(
-                R.layout.item_symptom,
-                parent,
-                false)
+                    R.layout.item_symptom,
+                    parent,
+                    false)
             return ViewHolder(view)
         }
         override fun onBindViewHolder(holder: SymptomAdapter.ViewHolder, position: Int) {
             holder.txText1.text = model.getSymptom(position).name
-
             if (selectItems.get(position, false))
                 holder.txText1.setBackgroundColor(Color.parseColor("#FFE4E1"))
             else
