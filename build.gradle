@@ -21,6 +21,7 @@ allprojects {
         jcenter()
         // kakao SDK 설정
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
+        maven { url "http://jcenter.bintray.com" }
     }
 }
 

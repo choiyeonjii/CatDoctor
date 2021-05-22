@@ -18,10 +18,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_register.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
@@ -38,6 +43,12 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
+    val firebasedatabase = Firebase.database
+    val myRef=firebasedatabase.getReference("user")
+
+    data class User(var user_id: String, var password: String, var name: String, var nickname: String)
+    private var userlist = ArrayList<User>()
+
     data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String):Serializable
     private val info = ArrayList<Info>()
 
@@ -45,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        readUser()
         prefs = this.getSharedPreferences("Prefs", 0)
         editor = prefs.edit()
 
@@ -59,6 +71,7 @@ class LoginActivity : AppCompatActivity() {
         if(user!=null){
             google=1
         }
+
         Log.i("LoginActivity: kakao", kakao.toString())
         Log.i("google", google.toString())
         Log.i("normal", normal.toString())
@@ -116,9 +129,15 @@ class LoginActivity : AppCompatActivity() {
         }
 
         login_btn.setOnClickListener {
-            for (i in 0 until info.size) {
-                if(info[i].user_id.equals(id_txt.text.toString())) {
-                    if (info[i].password.equals(password_txt.text.toString())) {
+            Log.v("size",userlist.size.toString())
+            for (i in 0 until userlist.size) {
+
+                if(userlist[i].user_id.equals(id_txt.text.toString())) {
+                    Log.v("login_id",userlist[i].user_id)
+                    Log.v("input_id",id_txt.text.toString())
+                    Log.v("login_pw1",userlist[i].password)
+                    if (userlist[i].password.equals(password_txt.text.toString())) {
+                        Log.v("login_pw2",userlist[i].password)
                         if(checkbox.isChecked){
                             Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
                             normal+=1
@@ -246,5 +265,26 @@ class LoginActivity : AppCompatActivity() {
             val nickname = item.getString("nickname")
             info.add(Info(id, user_id, password, name, nickname))
         }
+    }
+    private fun readUser() {
+
+        myRef.addValueEventListener(object: ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val getUserInfo=snapshot
+                for (u in getUserInfo.children){
+                    val user_id: String=u.key.toString()
+                    val name: String=u.child("name").value as String
+                    val password: String=u.child("password").value as String
+                    val nickname: String=u.child("nickname").value as String
+                    Log.v("name",user_id)
+                    userlist.add(User(user_id, password, name, nickname))
+                }
+
+            }
+        })
+
     }
 }
