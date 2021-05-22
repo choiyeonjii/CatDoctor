@@ -31,46 +31,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_margin="10dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/diagnose_btn"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginRight="20dp"
+            android:layout_width="115dp"
+            android:layout_height="130dp"
+            android:layout_margin="10dp"
             android:drawableTop="@drawable/doctor"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:text="Diagnose"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="20dp"
+            android:textSize="15sp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="30dp" />
+
+        <Button
+            android:id="@+id/hospital_btn"
+            android:layout_width="115dp"
+            android:layout_height="130dp"
+            android:layout_margin="5dp"
+            android:drawableTop="@drawable/hospital"
+            android:paddingTop="10dp"
+            android:text="Hospital"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="15sp"
             app:backgroundTint="@color/white"
             app:cornerRadius="30dp" />
 
         <Button
             android:id="@+id/mypage_btn"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginLeft="20dp"
+            android:layout_width="115dp"
+            android:layout_height="130dp"
+            android:layout_margin="10dp"
             android:drawableTop="@drawable/happy"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:text="Mypage"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="20dp"
+            android:textSize="15sp"
             app:backgroundTint="@color/white"
             app:cornerRadius="30dp" />
 
     </LinearLayout>
-    <Button
-        android:id="@+id/hospital_btn"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginLeft="20dp"
-        android:drawableTop="@drawable/hospital"
-        android:paddingTop="20dp"
-        android:text="Hospital"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="20dp"
-        app:backgroundTint="@color/white"
-        app:cornerRadius="30dp" />
 
 </LinearLayout>

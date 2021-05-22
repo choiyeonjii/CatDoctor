@@ -34,7 +34,6 @@ class MypageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mypage)
 
-
         prefs = this.getSharedPreferences("Prefs", 0)
         editor = prefs.edit()
 
@@ -58,6 +57,7 @@ class MypageActivity : AppCompatActivity() {
                         Toast.makeText(this, "로그아웃 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
                         Log.i("TAG", "로그아웃 성공. SDK에서 토큰 삭제됨")
                         startActivity(Intent(this, LoginActivity::class.java))
+                        finishAffinity()
                         finish()
                     }
                 }
