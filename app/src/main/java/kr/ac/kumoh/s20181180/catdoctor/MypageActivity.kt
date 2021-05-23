@@ -6,17 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.user.UserApiClient
-import kotlinx.android.synthetic.main.activity_main.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import kotlinx.android.synthetic.main.activity_main.txResult
 import kotlinx.android.synthetic.main.activity_mypage.*
 
 class MypageActivity : AppCompatActivity() {

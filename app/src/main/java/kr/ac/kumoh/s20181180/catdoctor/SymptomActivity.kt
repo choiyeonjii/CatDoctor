@@ -54,19 +54,15 @@ class SymptomActivity : AppCompatActivity() {
 
         symptomTextView.setText("'" + classify[count] + "'의 증상을 선택해주세요.")
         model.requestSymptom(classify[count++])
-
-
         symBtn.setOnClickListener {
             if (count < classify.size) {
                 selectItems = SparseBooleanArray(0)
                 model = ViewModelProvider(this,
                         ViewModelProvider.AndroidViewModelFactory(application))
                         .get(SymptomViewModel::class.java)
-
                 model.list.observe(this, Observer<ArrayList<SymptomViewModel.Symptom>> {
                     mAdapter.notifyDataSetChanged()
                 })
-
                 symptomTextView.setText("'" + classify[count] + "'의 증상을 선택해주세요.")
                 model.requestSymptom(classify[count++])
             }
