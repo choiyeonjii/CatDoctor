@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
+import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
@@ -67,6 +68,7 @@ class DiseaseDetailActivity : AppCompatActivity() {
                     parseJson_Disease(it)
                 },
                 {
+                    Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
                 }
         )
         request.tag = QUEUE_TAG
