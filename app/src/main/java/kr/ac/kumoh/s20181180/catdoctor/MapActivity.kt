@@ -96,6 +96,34 @@ class MapActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+        listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
+            override fun onClick(v: View, position: Int) {
+                val builder = AlertDialog.Builder(this@MapActivity)
+                val itemList = arrayOf("자동차", "대중교통", "도보")
+                val url = "kakaomap://route?sp=${latitude},${longitude}&ep=${listItems[position].y},${listItems[position].x}"
+                builder.setTitle("길찾기")
+                builder.setItems(itemList) { dialog, which ->
+                    when(which) {
+                        0 -> {
+                            val car_url = Uri.parse("${url}&by=CAR")
+                            intent = Intent(Intent.ACTION_VIEW, car_url)
+                            startActivity(intent)
+                        }
+                        1 ->{
+                            val pub_url = Uri.parse("${url}&by=PUBLICTRANSIT")
+                            intent = Intent(Intent.ACTION_VIEW, pub_url)
+                            startActivity(intent)
+                        }
+                        2 ->{
+                            val foot_url = Uri.parse("${url}&by=FOOT")
+                            intent = Intent(Intent.ACTION_VIEW, foot_url)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                builder.show()
+            }
+        })
 
         //길찾기
         listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
