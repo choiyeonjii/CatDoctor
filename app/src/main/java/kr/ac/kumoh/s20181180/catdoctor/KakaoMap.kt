@@ -9,8 +9,9 @@ interface KakaoMap {
     fun getSearchKeyword(
         @Header("Authorization") key: String,     // 카카오 API 인증키 [필수]
         @Query("query") query: String,            // 검색을 원하는 질의어 [필수]
-        @Query("latitude") x: Double,
-        @Query("longitude") y: Double,
+        @Query("x") x:String,   // 중심 좌표의 x값 혹은 longitude(경도)
+        @Query("y") y:String,   // 중심 좌표의 y값 혹은 latitude(위도)
+        @Query("radius") radius: Int,           // 반경 거리 단위 meter
         @Query("page") page: Int                  // 결과 페이지 번호
     ): Call<ResultSearchKeyword>     // 받아온 정보가 ResultSearchKeyword 클래스의 구조로 담김
 }

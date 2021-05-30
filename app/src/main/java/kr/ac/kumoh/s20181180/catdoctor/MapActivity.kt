@@ -47,6 +47,7 @@ class MapActivity : AppCompatActivity() {
     private var gpsTracker: GpsTracker? = null
     private var latitude = 0.0
     private var longitude = 0.0
+    private var isper = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +65,7 @@ class MapActivity : AppCompatActivity() {
                 Toast.makeText(this, "현재위치 \n위도 $latitude\n경도 $longitude", Toast.LENGTH_LONG).show()
                 permissionCheck()
                 pageNumber = 1
-                searchKeyword(keyword, latitude, longitude, pageNumber)
+                searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
             } else {
                 // GPS가 꺼져있을 경우
                 Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
@@ -86,7 +87,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnPrevPage.setOnClickListener {
             pageNumber--
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, latitude, longitude, pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
             binding.rvList.smoothScrollToPosition(0)
         }
 
@@ -94,7 +95,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnNextPage.setOnClickListener {
             pageNumber++
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, latitude, longitude, pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
             binding.rvList.smoothScrollToPosition(0)
         }
     }
@@ -137,6 +138,7 @@ class MapActivity : AppCompatActivity() {
         } else {
             // 권한이 있는 상태
             startTracking()
+            isper = 1
         }
     }
     // 권한 요청 후 행동
@@ -172,13 +174,13 @@ class MapActivity : AppCompatActivity() {
     }
 
     // 키워드 검색 함수
-    private fun searchKeyword(keyword: String, latitude: Double, longitude: Double, page: Int) {
+    private fun searchKeyword(keyword: String, longitude: String, latitude: String, page: Int) {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val api = retrofit.create(KakaoMap::class.java)            // 통신 인터페이스를 객체로 생성
-        val call = api.getSearchKeyword(API_KEY, keyword, latitude, longitude, page)    // 검색 조건 입력
+        val call = api.getSearchKeyword(API_KEY, keyword, longitude, latitude, 5000, page)    // 검색 조건 입력
 
         // API 서버에 요청
         call.enqueue(object : Callback<ResultSearchKeyword> {
@@ -196,19 +198,29 @@ class MapActivity : AppCompatActivity() {
 
     // 검색 결과 처리 함수
     private fun addItemsAndMarkers(searchResult: ResultSearchKeyword?) {
-        if (!searchResult?.documents.isNullOrEmpty()) {
+        if (!searchResult?.documents.isNullOrEmpty() && isper == 1) {
             // 검색 결과 있음
             stopTracking()
             listItems.clear()                   // 리스트 초기화
             binding.mapView.removeAllPOIItems() // 지도의 마커 모두 제거
             for (document in searchResult!!.documents) {
                 // 결과를 리사이클러 뷰에 추가
-                val item = ListLayout(document.place_name,
+                if(document.road_address_name.equals("")){
+                    val item = ListLayout(document.place_name,
+                        document.address_name,
+                        document.phone,
+                        document.x.toDouble(),
+                        document.y.toDouble())
+                    listItems.add(item)
+                }
+                else{
+                    val item = ListLayout(document.place_name,
                         document.road_address_name,
                         document.phone,
                         document.x.toDouble(),
                         document.y.toDouble())
-                listItems.add(item)
+                    listItems.add(item)
+                }
 
                 // 지도에 마커 추가
                 val point = MapPOIItem()
