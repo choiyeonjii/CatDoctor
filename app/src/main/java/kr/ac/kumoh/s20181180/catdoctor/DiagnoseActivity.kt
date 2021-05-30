@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -55,9 +56,15 @@ class DiagnoseActivity : AppCompatActivity() {
         })
 
         model.requestDiseaseID(symptom_id)
+
+        backmainBtn.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            finish()
+        }
+
     }
-
-
 
     inner class DiagnoseAdapter: RecyclerView.Adapter<DiagnoseActivity.DiagnoseAdapter.ViewHolder>() {
         inner class ViewHolder : RecyclerView.ViewHolder,  View.OnClickListener {

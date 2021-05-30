@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CatDoctor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".SelectDiagnoseTypeActivity"
+            android:label="@string/app_name_diagnose"/>
+        <activity android:name=".MapActivity" />
         <activity
             android:name=".DiseaseDetailActivity"
             android:label="@string/app_name_diagnose_result" />
