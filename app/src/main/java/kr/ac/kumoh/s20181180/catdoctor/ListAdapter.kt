@@ -30,8 +30,13 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
         holder.itemView.setOnClickListener {
             itemClickListener.onClick(it, position)
         }
+        // 전화 이벤트
         holder.itemView.call.setOnClickListener {
             callClickListener.onClick(it, position)
+        }
+        // 길찾기 이벤트
+        holder.itemView.route.setOnClickListener {
+            routeClickListener.onClick(it, position)
         }
     }
 
@@ -51,6 +56,7 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
 
     private lateinit var itemClickListener: OnItemClickListener
 
+    // 전화
     interface OnCallClickListener {
         fun onClick(v: View, position: Int)
     }
@@ -60,4 +66,15 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
     }
 
     private lateinit var callClickListener: OnCallClickListener
+
+    // 길찾기
+    interface OnRouteClickListener {
+        fun onClick(v: View, position: Int)
+    }
+
+    fun setRouteClickListener(onRouteClickListener: OnRouteClickListener) {
+        this.routeClickListener = onRouteClickListener
+    }
+
+    private lateinit var routeClickListener: OnRouteClickListener
 }
