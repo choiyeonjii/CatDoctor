@@ -4,9 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
@@ -29,9 +26,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MapActivity : AppCompatActivity() {
@@ -41,7 +36,7 @@ class MapActivity : AppCompatActivity() {
     }
     private lateinit var binding : ActivityMapBinding
     private lateinit var mapView: MapView
-    private val listItems = arrayListOf<ListLayout>()   // 리사이클러 뷰 아이템
+    val listItems = arrayListOf<ListLayout>()   // 리사이클러 뷰 아이템
     private val listAdapter = ListAdapter(listItems)    // 리사이클러 뷰 어댑터
     private var pageNumber = 1      // 검색 페이지 번호
     private var keyword = "동물병원"        // 검색 키워드
@@ -50,8 +45,7 @@ class MapActivity : AppCompatActivity() {
     private var latitude = 0.0
     private var longitude = 0.0
     private var isper = 0
-    var placeurl: String = " "
-    private val eventListener = MarkerEventListener(this, placeurl)
+    private var eventListener = MarkerEventListener(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,9 +80,9 @@ class MapActivity : AppCompatActivity() {
             override fun onClick(v: View, position: Int) {
                 val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y.toDouble(), listItems[position].x.toDouble())
                 binding.mapView.setMapCenterPointAndZoomLevel(mapPoint, 1, true)
-                placeurl = listItems[position].place_url
             }
         })
+
         listAdapter.setCallClickListener(object : ListAdapter.OnCallClickListener{
             override fun onClick(v: View, position: Int) {
                 val input = listItems[position].phone
@@ -97,6 +91,7 @@ class MapActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+
         listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
             override fun onClick(v: View, position: Int) {
                 val builder = AlertDialog.Builder(this@MapActivity)
@@ -291,8 +286,17 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    // 마커 클릭 이벤트 리스너
-    class MarkerEventListener(val context: Context, val placeurl: String): MapView.POIItemEventListener {
+    fun getplaceurl(name:String){
+        for( item in listItems ){
+            if (name.equals(item.name)){
+                val uri = Uri.parse(item.place_url)
+                intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
+        }
+    }
+
+    inner class MarkerEventListener(val context: Context): MapView.POIItemEventListener {
         override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
         }
 
@@ -300,8 +304,8 @@ class MapActivity : AppCompatActivity() {
         }
 
         override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
-            Log.i("말풍선: ", poiItem?.itemName.toString())
-            Log.i("장소", placeurl)
+            //Toast.makeText(context, poiItem?.itemName, Toast.LENGTH_SHORT).show()
+            getplaceurl(poiItem!!.itemName)
         }
 
         override fun onDraggablePOIItemMoved(mapView: MapView?, poiItem: MapPOIItem?, mapPoint: MapPoint?) {
