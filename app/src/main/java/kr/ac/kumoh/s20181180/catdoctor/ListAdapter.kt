@@ -1,10 +1,16 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.item_layout.view.*
 
 class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<ListAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListAdapter.ViewHolder {
@@ -24,6 +30,9 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
         holder.itemView.setOnClickListener {
             itemClickListener.onClick(it, position)
         }
+        holder.itemView.call.setOnClickListener {
+            callClickListener.onClick(it, position)
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -41,4 +50,14 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
     }
 
     private lateinit var itemClickListener: OnItemClickListener
+
+    interface OnCallClickListener {
+        fun onClick(v: View, position: Int)
+    }
+
+    fun setCallClickListener(onCallClickListener: OnCallClickListener) {
+        this.callClickListener = onCallClickListener
+    }
+
+    private lateinit var callClickListener: OnCallClickListener
 }

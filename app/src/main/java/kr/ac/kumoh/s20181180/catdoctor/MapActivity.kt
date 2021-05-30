@@ -31,6 +31,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MapActivity : AppCompatActivity() {
@@ -39,6 +40,7 @@ class MapActivity : AppCompatActivity() {
         const val API_KEY = "KakaoAK 82e70293b56bcc9e592b091d1cb39d1a"  // REST API 키
     }
     private lateinit var binding : ActivityMapBinding
+    private lateinit var mapView: MapView
     private val listItems = arrayListOf<ListLayout>()   // 리사이클러 뷰 아이템
     private val listAdapter = ListAdapter(listItems)    // 리사이클러 뷰 어댑터
     private var pageNumber = 1      // 검색 페이지 번호
@@ -48,12 +50,16 @@ class MapActivity : AppCompatActivity() {
     private var latitude = 0.0
     private var longitude = 0.0
     private var isper = 0
+    var placeurl: String = " "
+    private val eventListener = MarkerEventListener(this, placeurl)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMapBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        mapView = binding.mapView
+        mapView.setPOIItemEventListener(eventListener)
 
         // 위치추적 버튼
         gps_btn.setOnClickListener {
@@ -78,8 +84,17 @@ class MapActivity : AppCompatActivity() {
         // 리스트 아이템 클릭 시 해당 위치로 이동
         listAdapter.setItemClickListener(object : ListAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
-                val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y, listItems[position].x)
+                val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y.toDouble(), listItems[position].x.toDouble())
                 binding.mapView.setMapCenterPointAndZoomLevel(mapPoint, 1, true)
+                placeurl = listItems[position].place_url
+            }
+        })
+        listAdapter.setCallClickListener(object : ListAdapter.OnCallClickListener{
+            override fun onClick(v: View, position: Int) {
+                val input = listItems[position].phone
+                val myUri = Uri.parse("tel:${input}")
+                intent = Intent(Intent.ACTION_DIAL, myUri)
+                startActivity(intent)
             }
         })
 
@@ -209,16 +224,20 @@ class MapActivity : AppCompatActivity() {
                     val item = ListLayout(document.place_name,
                         document.address_name,
                         document.phone,
-                        document.x.toDouble(),
-                        document.y.toDouble())
+                        document.x,
+                        document.y,
+                        document.distance,
+                        document.place_url)
                     listItems.add(item)
                 }
                 else{
                     val item = ListLayout(document.place_name,
                         document.road_address_name,
                         document.phone,
-                        document.x.toDouble(),
-                        document.y.toDouble())
+                        document.x,
+                        document.y,
+                        document.distance,
+                        document.place_url)
                     listItems.add(item)
                 }
 
@@ -241,6 +260,23 @@ class MapActivity : AppCompatActivity() {
         } else {
             // 검색 결과 없음
             Toast.makeText(this, "검색 결과가 없습니다", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // 마커 클릭 이벤트 리스너
+    class MarkerEventListener(val context: Context, val placeurl: String): MapView.POIItemEventListener {
+        override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
+            Log.i("말풍선: ", poiItem?.itemName.toString())
+            Log.i("장소", placeurl)
+        }
+
+        override fun onDraggablePOIItemMoved(mapView: MapView?, poiItem: MapPOIItem?, mapPoint: MapPoint?) {
         }
     }
 }
