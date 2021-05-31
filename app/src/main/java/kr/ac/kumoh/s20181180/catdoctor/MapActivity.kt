@@ -4,9 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
@@ -29,7 +26,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 import java.util.*
 
 
@@ -39,7 +35,8 @@ class MapActivity : AppCompatActivity() {
         const val API_KEY = "KakaoAK 82e70293b56bcc9e592b091d1cb39d1a"  // REST API 키
     }
     private lateinit var binding : ActivityMapBinding
-    private val listItems = arrayListOf<ListLayout>()   // 리사이클러 뷰 아이템
+    private lateinit var mapView: MapView
+    val listItems = arrayListOf<ListLayout>()   // 리사이클러 뷰 아이템
     private val listAdapter = ListAdapter(listItems)    // 리사이클러 뷰 어댑터
     private var pageNumber = 1      // 검색 페이지 번호
     private var keyword = "동물병원"        // 검색 키워드
@@ -47,12 +44,16 @@ class MapActivity : AppCompatActivity() {
     private var gpsTracker: GpsTracker? = null
     private var latitude = 0.0
     private var longitude = 0.0
+    private var isper = 0
+    private var eventListener = MarkerEventListener(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMapBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        mapView = binding.mapView
+        mapView.setPOIItemEventListener(eventListener)
 
         // 위치추적 버튼
         gps_btn.setOnClickListener {
@@ -64,7 +65,7 @@ class MapActivity : AppCompatActivity() {
                 Toast.makeText(this, "현재위치 \n위도 $latitude\n경도 $longitude", Toast.LENGTH_LONG).show()
                 permissionCheck()
                 pageNumber = 1
-                searchKeyword(keyword, latitude, longitude, pageNumber)
+                searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
             } else {
                 // GPS가 꺼져있을 경우
                 Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
@@ -77,8 +78,46 @@ class MapActivity : AppCompatActivity() {
         // 리스트 아이템 클릭 시 해당 위치로 이동
         listAdapter.setItemClickListener(object : ListAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
-                val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y, listItems[position].x)
+                val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y.toDouble(), listItems[position].x.toDouble())
                 binding.mapView.setMapCenterPointAndZoomLevel(mapPoint, 1, true)
+            }
+        })
+
+        listAdapter.setCallClickListener(object : ListAdapter.OnCallClickListener{
+            override fun onClick(v: View, position: Int) {
+                val input = listItems[position].phone
+                val myUri = Uri.parse("tel:${input}")
+                intent = Intent(Intent.ACTION_DIAL, myUri)
+                startActivity(intent)
+            }
+        })
+
+        listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
+            override fun onClick(v: View, position: Int) {
+                val builder = AlertDialog.Builder(this@MapActivity)
+                val itemList = arrayOf("자동차", "대중교통", "도보")
+                val url = "kakaomap://route?sp=${latitude},${longitude}&ep=${listItems[position].y},${listItems[position].x}"
+                builder.setTitle("길찾기")
+                builder.setItems(itemList) { dialog, which ->
+                    when(which) {
+                        0 -> {
+                            val car_url = Uri.parse("${url}&by=CAR")
+                            intent = Intent(Intent.ACTION_VIEW, car_url)
+                            startActivity(intent)
+                        }
+                        1 ->{
+                            val pub_url = Uri.parse("${url}&by=PUBLICTRANSIT")
+                            intent = Intent(Intent.ACTION_VIEW, pub_url)
+                            startActivity(intent)
+                        }
+                        2 ->{
+                            val foot_url = Uri.parse("${url}&by=FOOT")
+                            intent = Intent(Intent.ACTION_VIEW, foot_url)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                builder.show()
             }
         })
 
@@ -86,7 +125,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnPrevPage.setOnClickListener {
             pageNumber--
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, latitude, longitude, pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
             binding.rvList.smoothScrollToPosition(0)
         }
 
@@ -94,7 +133,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnNextPage.setOnClickListener {
             pageNumber++
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, latitude, longitude, pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
             binding.rvList.smoothScrollToPosition(0)
         }
     }
@@ -137,6 +176,7 @@ class MapActivity : AppCompatActivity() {
         } else {
             // 권한이 있는 상태
             startTracking()
+            isper = 1
         }
     }
     // 권한 요청 후 행동
@@ -172,13 +212,13 @@ class MapActivity : AppCompatActivity() {
     }
 
     // 키워드 검색 함수
-    private fun searchKeyword(keyword: String, latitude: Double, longitude: Double, page: Int) {
+    private fun searchKeyword(keyword: String, longitude: String, latitude: String, page: Int) {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val api = retrofit.create(KakaoMap::class.java)            // 통신 인터페이스를 객체로 생성
-        val call = api.getSearchKeyword(API_KEY, keyword, latitude, longitude, page)    // 검색 조건 입력
+        val call = api.getSearchKeyword(API_KEY, keyword, longitude, latitude, 5000, page)    // 검색 조건 입력
 
         // API 서버에 요청
         call.enqueue(object : Callback<ResultSearchKeyword> {
@@ -196,19 +236,33 @@ class MapActivity : AppCompatActivity() {
 
     // 검색 결과 처리 함수
     private fun addItemsAndMarkers(searchResult: ResultSearchKeyword?) {
-        if (!searchResult?.documents.isNullOrEmpty()) {
+        if (!searchResult?.documents.isNullOrEmpty() && isper == 1) {
             // 검색 결과 있음
             stopTracking()
             listItems.clear()                   // 리스트 초기화
             binding.mapView.removeAllPOIItems() // 지도의 마커 모두 제거
             for (document in searchResult!!.documents) {
                 // 결과를 리사이클러 뷰에 추가
-                val item = ListLayout(document.place_name,
+                if(document.road_address_name.equals("")){
+                    val item = ListLayout(document.place_name,
+                        document.address_name,
+                        document.phone,
+                        document.x,
+                        document.y,
+                        document.distance,
+                        document.place_url)
+                    listItems.add(item)
+                }
+                else{
+                    val item = ListLayout(document.place_name,
                         document.road_address_name,
                         document.phone,
-                        document.x.toDouble(),
-                        document.y.toDouble())
-                listItems.add(item)
+                        document.x,
+                        document.y,
+                        document.distance,
+                        document.place_url)
+                    listItems.add(item)
+                }
 
                 // 지도에 마커 추가
                 val point = MapPOIItem()
@@ -229,6 +283,32 @@ class MapActivity : AppCompatActivity() {
         } else {
             // 검색 결과 없음
             Toast.makeText(this, "검색 결과가 없습니다", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun getplaceurl(name:String){
+        for( item in listItems ){
+            if (name.equals(item.name)){
+                val uri = Uri.parse(item.place_url)
+                intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
+        }
+    }
+
+    inner class MarkerEventListener(val context: Context): MapView.POIItemEventListener {
+        override fun onPOIItemSelected(mapView: MapView?, poiItem: MapPOIItem?) {
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?) {
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
+            //Toast.makeText(context, poiItem?.itemName, Toast.LENGTH_SHORT).show()
+            getplaceurl(poiItem!!.itemName)
+        }
+
+        override fun onDraggablePOIItemMoved(mapView: MapView?, poiItem: MapPOIItem?, mapPoint: MapPoint?) {
         }
     }
 }
