@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        const val SERVER_URL = "http://192.168.0.6:8080"
+        const val SERVER_URL = "http://192.168.0.15:8080"
     }
 
     private var kakao=0
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         normal = intent.getIntExtra("normal", normal)
 
         diagnose_btn.setOnClickListener {
-            startActivity(Intent(this, SymptomClassifyActivity::class.java))
+            startActivity(Intent(this, SelectDiagnoseTypeActivity::class.java))
         }
 
         mypage_btn.setOnClickListener {

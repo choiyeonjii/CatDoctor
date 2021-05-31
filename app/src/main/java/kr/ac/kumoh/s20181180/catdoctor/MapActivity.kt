@@ -269,7 +269,7 @@ class MapActivity : AppCompatActivity() {
                 point.apply {
                     itemName = document.place_name
                     mapPoint = MapPoint.mapPointWithGeoCoord(document.y.toDouble(),
-                            document.x.toDouble())
+                        document.x.toDouble())
                     markerType = MapPOIItem.MarkerType.BluePin
                     selectedMarkerType = MapPOIItem.MarkerType.RedPin
                 }
