@@ -26,6 +26,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Thread.sleep
 import java.util.*
 
 
@@ -78,6 +79,7 @@ class MapActivity : AppCompatActivity() {
         // 리스트 아이템 클릭 시 해당 위치로 이동
         listAdapter.setItemClickListener(object : ListAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
+                stopTracking()
                 val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y.toDouble(), listItems[position].x.toDouble())
                 binding.mapView.setMapCenterPointAndZoomLevel(mapPoint, 1, true)
             }
@@ -238,7 +240,7 @@ class MapActivity : AppCompatActivity() {
     private fun addItemsAndMarkers(searchResult: ResultSearchKeyword?) {
         if (!searchResult?.documents.isNullOrEmpty() && isper == 1) {
             // 검색 결과 있음
-            stopTracking()
+            //stopTracking()
             listItems.clear()                   // 리스트 초기화
             binding.mapView.removeAllPOIItems() // 지도의 마커 모두 제거
             for (document in searchResult!!.documents) {
