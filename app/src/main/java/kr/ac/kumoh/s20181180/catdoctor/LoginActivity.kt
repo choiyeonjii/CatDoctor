@@ -33,7 +33,7 @@ import java.io.Serializable
 
 
 class LoginActivity : AppCompatActivity() {
-    val url = "http://192.168.0.6:8080/user"
+    val url = "http://192.168.0.105:8080/user"
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -52,6 +52,8 @@ class LoginActivity : AppCompatActivity() {
     data class Info(var id: Int, var user_id: String, var password: String, var name: String, var nickname: String):Serializable
     private val info = ArrayList<Info>()
 
+    var usernickname=""
+    var userid=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -82,7 +84,8 @@ class LoginActivity : AppCompatActivity() {
             normal = intent.getIntExtra("normal", normal)
         }
         else{
-            startMainActivity(kakao,google,normal)
+            //수정 필요
+            startMainActivity(kakao,google,normal,"","")
         }
 
         register_btn.setOnClickListener {
@@ -111,7 +114,8 @@ class LoginActivity : AppCompatActivity() {
                 kakao+=1
                 editor.putInt("kakao", kakao).apply()
                 editor.commit()
-                startMainActivity(kakao,google,normal)
+                //수정 필요
+                startMainActivity(kakao,google,normal,"","")
             }
         }
 
@@ -133,45 +137,37 @@ class LoginActivity : AppCompatActivity() {
             for (i in 0 until userlist.size) {
 
                 if(userlist[i].user_id.equals(id_txt.text.toString())) {
-                    Log.v("login_id",userlist[i].user_id)
-                    Log.v("input_id",id_txt.text.toString())
-                    Log.v("login_pw1",userlist[i].password)
+
                     if (userlist[i].password.equals(password_txt.text.toString())) {
-                        Log.v("login_pw2",userlist[i].password)
+                        usernickname=userlist[i].nickname
+                        userid=userlist[i].user_id
                         if(checkbox.isChecked){
+
                             Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
                             normal+=1
                             editor.putInt("normal", normal).apply()
                             editor.commit()
                             Log.i("login normal", normal.toString())
-                            startMainActivity(kakao,google,normal)
+                            startMainActivity(kakao,google,normal,userid,usernickname)
                             break
                         }
                         else{
                             Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
                             normal+=1
-                            startMainActivity(kakao,google,normal)
+                            startMainActivity(kakao,google,normal,userid,usernickname)
                             break
                         }
-                    } else {
+                    } else if(i==userlist.size-1) {
                         Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
-                        Log.e("LOGIN FAIL", "로그인 실패")
+
                     }
                 }
-                else{
+                else if(i==userlist.size-1){
                     Toast.makeText(this, "로그인 실패", Toast.LENGTH_LONG).show()
-                    Log.e("LOGIN FAIL", "로그인 실패")
                 }
             }
         }
     }
-
-//    override fun onStart() {
-//        super.onStart()
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        val currentUser = auth.currentUser
-//        updateUI(currentUser)
-//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -219,8 +215,9 @@ class LoginActivity : AppCompatActivity() {
     }
     // [END signin]
 
+    //수정 필요
     private fun updateUI(user: FirebaseUser?) {
-        startMainActivity(kakao,google,normal)
+        startMainActivity(kakao,google,normal,"","")
     }
 
     companion object {
@@ -229,11 +226,13 @@ class LoginActivity : AppCompatActivity() {
         private const val KAKAO_TAG = "kakaoLoginActivity"
     }
 
-    private fun startMainActivity(kakao: Int, google: Int, normal: Int) {
+    private fun startMainActivity(kakao: Int, google: Int, normal: Int, userid:String, usernickname: String) {
         intent = Intent(this, MainActivity::class.java)
         intent.putExtra("kakao", kakao)
         intent.putExtra("google", google)
         intent.putExtra("normal", normal)
+        intent.putExtra("id", userid)
+        intent.putExtra("nickname", usernickname)
         startActivity(intent)
         finish()
     }
