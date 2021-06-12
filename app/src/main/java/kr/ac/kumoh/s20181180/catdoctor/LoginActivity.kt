@@ -27,12 +27,28 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
+import net.daum.mf.map.api.MapPOIItem
+import net.daum.mf.map.api.MapPoint
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.Serializable
 
 
 class LoginActivity : AppCompatActivity() {
+    companion object {
+        private const val GOOGLE_TAG = "GoogleActivity"
+        private const val RC_SIGN_IN = 9001
+        private const val KAKAO_TAG = "kakaoLoginActivity"
+
+        const val BASE_URL = "https://kapi.kakao.com/"
+        const val API_KEY = "KakaoAK 82e70293b56bcc9e592b091d1cb39d1a"  // REST API
+    }
+
     val url = "http://192.168.0.105:8080/user"
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
@@ -114,8 +130,23 @@ class LoginActivity : AppCompatActivity() {
                 kakao+=1
                 editor.putInt("kakao", kakao).apply()
                 editor.commit()
-                //수정 필요
-                startMainActivity(kakao,google,normal,"","")
+                Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
+                normal+=1
+
+                UserApiClient.instance.me { user, error ->
+                    if (error != null) {
+                        Log.e(KAKAO_TAG, "사용자 정보 요청 실패", error)
+                    }
+                    else if (user != null) {
+                        Log.i(KAKAO_TAG, "사용자 정보 요청 성공" +
+                                "\n아이디: ${user.id}" +
+                                "\n닉네임: ${user.kakaoAccount?.profile?.nickname}"
+                                )
+                        userid = user.id.toString()
+                        usernickname = user.kakaoAccount?.profile?.nickname.toString()
+                    }
+                }
+                startMainActivity(kakao,google,normal,userid,usernickname)
             }
         }
 
@@ -148,12 +179,6 @@ class LoginActivity : AppCompatActivity() {
                             editor.putInt("normal", normal).apply()
                             editor.commit()
                             Log.i("login normal", normal.toString())
-                            startMainActivity(kakao,google,normal,userid,usernickname)
-                            break
-                        }
-                        else{
-                            Toast.makeText(this, "로그인 성공", Toast.LENGTH_LONG).show()
-                            normal+=1
                             startMainActivity(kakao,google,normal,userid,usernickname)
                             break
                         }
@@ -220,12 +245,6 @@ class LoginActivity : AppCompatActivity() {
         startMainActivity(kakao,google,normal,"","")
     }
 
-    companion object {
-        private const val GOOGLE_TAG = "GoogleActivity"
-        private const val RC_SIGN_IN = 9001
-        private const val KAKAO_TAG = "kakaoLoginActivity"
-    }
-
     private fun startMainActivity(kakao: Int, google: Int, normal: Int, userid:String, usernickname: String) {
         intent = Intent(this, MainActivity::class.java)
         intent.putExtra("kakao", kakao)
@@ -284,6 +303,5 @@ class LoginActivity : AppCompatActivity() {
 
             }
         })
-
     }
 }

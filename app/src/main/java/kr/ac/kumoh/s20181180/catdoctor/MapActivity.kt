@@ -59,6 +59,24 @@ class MapActivity : AppCompatActivity() {
         userid=intent.getStringExtra("id").toString()
         usernickname=intent.getStringExtra("nickname").toString()
 
+        var range = 3000
+        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            when(checkedId){
+                R.id.radioButton->{
+                    range = 3000
+                    searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+                }
+                R.id.radioButton2->{
+                    range = 5000
+                    searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+                }
+                R.id.radioButton3->{
+                    range = 7000
+                    searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+                }
+            }
+        }
+
         // 위치추적 버튼
         gps_btn.setOnClickListener {
             if (checkLocationService()) {
@@ -69,7 +87,7 @@ class MapActivity : AppCompatActivity() {
                 Toast.makeText(this, "현재위치 \n위도 $latitude\n경도 $longitude", Toast.LENGTH_LONG).show()
                 permissionCheck()
                 pageNumber = 1
-                searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
+                searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
             } else {
                 // GPS가 꺼져있을 경우
                 Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
@@ -87,41 +105,13 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
-        //전화
+        // 전화
         listAdapter.setCallClickListener(object : ListAdapter.OnCallClickListener{
             override fun onClick(v: View, position: Int) {
                 val input = listItems[position].phone
                 val myUri = Uri.parse("tel:${input}")
                 intent = Intent(Intent.ACTION_DIAL, myUri)
                 startActivity(intent)
-            }
-        })
-        listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
-            override fun onClick(v: View, position: Int) {
-                val builder = AlertDialog.Builder(this@MapActivity)
-                val itemList = arrayOf("자동차", "대중교통", "도보")
-                val url = "kakaomap://route?sp=${latitude},${longitude}&ep=${listItems[position].y},${listItems[position].x}"
-                builder.setTitle("길찾기")
-                builder.setItems(itemList) { dialog, which ->
-                    when(which) {
-                        0 -> {
-                            val car_url = Uri.parse("${url}&by=CAR")
-                            intent = Intent(Intent.ACTION_VIEW, car_url)
-                            startActivity(intent)
-                        }
-                        1 ->{
-                            val pub_url = Uri.parse("${url}&by=PUBLICTRANSIT")
-                            intent = Intent(Intent.ACTION_VIEW, pub_url)
-                            startActivity(intent)
-                        }
-                        2 ->{
-                            val foot_url = Uri.parse("${url}&by=FOOT")
-                            intent = Intent(Intent.ACTION_VIEW, foot_url)
-                            startActivity(intent)
-                        }
-                    }
-                }
-                builder.show()
             }
         })
 
@@ -176,7 +166,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnPrevPage.setOnClickListener {
             pageNumber--
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
             binding.rvList.smoothScrollToPosition(0)
         }
 
@@ -184,7 +174,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnNextPage.setOnClickListener {
             pageNumber++
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
             binding.rvList.smoothScrollToPosition(0)
         }
     }
@@ -263,13 +253,13 @@ class MapActivity : AppCompatActivity() {
     }
 
     // 키워드 검색 함수
-    private fun searchKeyword(keyword: String, longitude: String, latitude: String, page: Int) {
+    private fun searchKeyword(keyword: String, longitude: String, latitude: String, page: Int, range: Int) {
         val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         val api = retrofit.create(KakaoMap::class.java)            // 통신 인터페이스를 객체로 생성
-        val call = api.getSearchKeyword(API_KEY, keyword, longitude, latitude, 5000, page)    // 검색 조건 입력
+        val call = api.getSearchKeyword(API_KEY, keyword, longitude, latitude, range, page)    // 검색 조건 입력
 
         // API 서버에 요청
         call.enqueue(object : Callback<ResultSearchKeyword> {
