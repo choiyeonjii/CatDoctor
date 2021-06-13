@@ -7,9 +7,13 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_hospital_review.*
 import kotlinx.android.synthetic.main.activity_review.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -21,6 +25,12 @@ class ReviewActivity : AppCompatActivity() {
     private var userid=""
     private var usernickname=""
     private var sitem=""
+    private var writetype=0
+    val firebasedatabase = Firebase.database
+
+    companion object {
+        var myRef : DatabaseReference? = null
+    }
     private lateinit var database: DatabaseReference
     data class Review(var nickname: String, var star: String, var title: String, var content: String, var date: String)
 
@@ -33,12 +43,15 @@ class ReviewActivity : AppCompatActivity() {
 
         userid=intent.getStringExtra("id").toString()
         usernickname=intent.getStringExtra("nickname").toString()
+        writetype=intent.getIntExtra("type",0)
 
         val intent=intent
 
         val name = intent.getStringExtra("name").toString()
         val road = intent.getStringExtra("road").toString()
 
+        myRef=firebasedatabase.getReference("review/"+name+"/"+road)
+        readReview()
         reg_review_btn.setOnClickListener {
             writeReview(userid,usernickname,name,road)
             finish()
@@ -80,4 +93,30 @@ class ReviewActivity : AppCompatActivity() {
         database.child("review").child(name).child(road).child(user_id).setValue(newReview)
     }
 
+    private fun readReview() {
+        myRef?.addValueEventListener(object: ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+            //Review(var nickname: String, var star: String, var title: String, var content: String, var date: String)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val getUserInfo=snapshot
+                for (u in getUserInfo.children){
+                    val user_id: String=u.key.toString()
+                    val content: String=u.child("content").value as String
+                    val star: String=u.child("star").value as String
+                    val title: String=u.child("title").value as String
+
+                    if(user_id==userid){
+                        val r_title = findViewById<View>(R.id.review_title) as EditText
+                        val r_content = findViewById<View>(R.id.review_content) as EditText
+                        val r_star=findViewById<View>(R.id.review_star) as Spinner
+                        r_title.setText(title)
+                        r_content.setText(content)
+                        r_star.setSelection(star.toInt()-1)
+                    }
+                }
+            }
+        })
+    }
 }

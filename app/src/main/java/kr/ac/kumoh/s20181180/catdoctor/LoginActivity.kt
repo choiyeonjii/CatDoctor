@@ -133,7 +133,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         login_btn.setOnClickListener {
-            Log.v("size",userlist.size.toString())
             for (i in 0 until userlist.size) {
 
                 if(userlist[i].user_id.equals(id_txt.text.toString())) {

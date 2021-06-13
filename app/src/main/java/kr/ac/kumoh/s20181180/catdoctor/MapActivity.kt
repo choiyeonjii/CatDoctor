@@ -16,6 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_map.*
 import kr.ac.kumoh.s20181180.catdoctor.databinding.ActivityMapBinding
 import net.daum.mf.map.api.MapPOIItem
@@ -26,6 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.Serializable
 
 
 class MapActivity : AppCompatActivity() {
@@ -47,6 +53,13 @@ class MapActivity : AppCompatActivity() {
     private var eventListener = MarkerEventListener(this)
     private var userid=""
     private var usernickname=""
+
+    val firebasedatabase = Firebase.database
+    val myRef=firebasedatabase.getReference("review")
+
+    data class Review(var nickname: String, var star: String, var title: String, var content: String, var date: String): Serializable
+
+    private var review = ArrayList<Review>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,13 +147,8 @@ class MapActivity : AppCompatActivity() {
                 val road = listItems[position].road
                 val call = listItems[position].phone
 
-                val intent = Intent(applicationContext, HospitalReviewActivity::class.java)
-                intent.putExtra("name", name)
-                intent.putExtra("road", road)
-                intent.putExtra("call", call)
-                intent.putExtra("id",userid)
-                intent.putExtra("nickname",usernickname)
-                startActivity(intent)
+                readReview(name,road,call)
+
             }
         })
 
@@ -334,4 +342,39 @@ class MapActivity : AppCompatActivity() {
         override fun onDraggablePOIItemMoved(mapView: MapView?, poiItem: MapPOIItem?, mapPoint: MapPoint?) {
         }
     }
+
+    private fun readReview(name : String, road: String, call:String) {
+        //val myRef =firebasedatabase.getReference("review/"+name+"/"+road)
+        review.clear()
+        myRef.addValueEventListener(object: ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+            //Review(var nickname: String, var star: String, var title: String, var content: String, var date: String)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var getReviewInfo=snapshot
+                getReviewInfo=getReviewInfo.child(name)
+                getReviewInfo=getReviewInfo.child(road)
+                for (u in getReviewInfo.children) {
+                    val user_id: String = u.key.toString()
+                    val content: String = u.child("content").value as String
+                    val star: String = u.child("star").value as String
+                    val title: String = u.child("title").value as String
+                    val date: String = u.child("date").value as String
+                    review.add(Review(usernickname, star, title, content, date))
+                }
+                Log.v("리뷰데이터1",review.toString())
+                val intent = Intent(applicationContext, HospitalReviewActivity::class.java)
+                intent.putExtra("name", name)
+                intent.putExtra("road", road)
+                intent.putExtra("call", call)
+                intent.putExtra("id",userid)
+                intent.putExtra("nickname",usernickname)
+                intent.putExtra("review",review)
+                startActivity(intent)
+            }
+        })
+
+    }
+
 }
