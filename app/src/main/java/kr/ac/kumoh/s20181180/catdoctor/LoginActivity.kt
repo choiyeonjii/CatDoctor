@@ -27,6 +27,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
+import kr.ac.kumoh.s20181180.catdoctor.MainActivity.Companion.SERVER_URL
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import org.json.JSONArray
@@ -49,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
         const val API_KEY = "KakaoAK 82e70293b56bcc9e592b091d1cb39d1a"  // REST API
     }
 
-    val url = "http://192.168.0.105:8080/user"
+    val url = "$SERVER_URL/user"
     private lateinit var mQueue: RequestQueue
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient

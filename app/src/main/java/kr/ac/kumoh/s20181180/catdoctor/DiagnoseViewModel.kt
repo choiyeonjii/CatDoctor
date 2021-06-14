@@ -35,8 +35,6 @@ class DiagnoseViewModel(application: Application) : AndroidViewModel(application
     var disease_id = ArrayList<Int>()
 
     var diseaseMap = HashMap<Int, Int>()
-    var keySetList = ArrayList<Int>(diseaseMap.size)
-
 
     init {
         list.value = disease

@@ -57,7 +57,7 @@ class DiseaseDetailActivity : AppCompatActivity() {
 
     private fun requestDisease() {
         // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        val url = "${SERVER_URL}/disease?id=(${disease_id})"
+        val url = "$SERVER_URL/disease?id=(${disease_id})"
         Log.i("disease_url2", url)
 
         val request = JsonArrayRequest(
@@ -77,7 +77,7 @@ class DiseaseDetailActivity : AppCompatActivity() {
 
     private fun requestSymptom() {
         // NOTE: 서버 주소는 본인의 서버 IP 사용할 것
-        val url = "${SERVER_URL}/symptom_id?disease_id=(${disease_id})"
+        val url = "$SERVER_URL/symptom_id?disease_id=(${disease_id})"
         Log.i("disease_url3", url)
 
         val request = JsonArrayRequest(

@@ -1,17 +1,14 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
-// 참고자료 : https://colab.research.google.com/drive/135lSP5ttRFtgBlAE2P81oSBE1zMJNhSJ#scrollTo=etvPtH9l2QfU
-
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        const val SERVER_URL = "http://192.168.0.105:8080"
+        const val SERVER_URL = "http://192.168.0.15:8080"
     }
 
     private var kakao=0
@@ -31,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         usernickname=intent.getStringExtra("nickname").toString()
 
         diagnose_btn.setOnClickListener {
-            startActivity(Intent(this, SymptomClassifyActivity::class.java))
+            startActivity(Intent(this, SelectDiagnoseTypeActivity::class.java))
         }
 
         mypage_btn.setOnClickListener {
