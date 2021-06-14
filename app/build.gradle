@@ -35,6 +35,9 @@ android {
     buildFeatures {
         viewBinding true
     }
+    aaptOptions {
+        noCompress "tflite"
+    }
 }
 
 dependencies {
@@ -59,5 +62,6 @@ dependencies {
     compile files('libs/libDaumMapAndroid.jar')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('libs/libDaumMapAndroid.jar')
-
+    implementation 'org.tensorflow:tensorflow-lite:+'
+    implementation 'gun0912.ted:tedpermission:2.2.3'
 }

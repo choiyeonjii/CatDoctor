@@ -41,5 +41,9 @@ class SelectDiagnoseTypeActivity : AppCompatActivity() {
         diagnose_btn1.setOnClickListener {
             startActivity(Intent(this, SymptomClassifyActivity::class.java))
         }
+
+        diagnose_btn2.setOnClickListener {
+            startActivity(Intent(this, PhotoDiagnoseActivity::class.java))
+        }
     }
 }

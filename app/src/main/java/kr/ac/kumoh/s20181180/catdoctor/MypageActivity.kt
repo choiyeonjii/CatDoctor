@@ -43,6 +43,9 @@ class MypageActivity : AppCompatActivity() {
                 // kakao 로그아웃
                 UserApiClient.instance.logout { error ->
                     if (error != null) {
+                        kakao=0
+                        editor.putInt("kakao", kakao).apply()
+                        editor.commit()
                         Log.e("TAG", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
                     } else {
                         kakao=0
