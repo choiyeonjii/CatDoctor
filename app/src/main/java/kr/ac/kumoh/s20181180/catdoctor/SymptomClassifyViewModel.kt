@@ -3,6 +3,7 @@ package kr.ac.kumoh.s20181180.catdoctor
 import android.app.Application
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.Toast
 import androidx.collection.LruCache
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData

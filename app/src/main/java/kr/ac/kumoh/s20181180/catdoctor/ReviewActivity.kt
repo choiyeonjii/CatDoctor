@@ -13,26 +13,24 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_hospital_review.*
 import kotlinx.android.synthetic.main.activity_review.*
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.*
 
 class ReviewActivity : AppCompatActivity() {
 
     private var userid=""
     private var usernickname=""
-    private var sitem=""
-    private var writetype=0
+    private var rt:Long=0
     val firebasedatabase = Firebase.database
 
+    var ratingcheck=0
+    var titlecheck=0
+    var contentcheck=0
     companion object {
         var myRef : DatabaseReference? = null
     }
     private lateinit var database: DatabaseReference
-    data class Review(var nickname: String, var star: String, var title: String, var content: String, var date: String)
+    data class Review(var nickname: String, var star: Long, var title: String, var content: String, var date: String)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +41,7 @@ class ReviewActivity : AppCompatActivity() {
 
         userid=intent.getStringExtra("id").toString()
         usernickname=intent.getStringExtra("nickname").toString()
-        writetype=intent.getIntExtra("type",0)
+
 
         val intent=intent
 
@@ -52,36 +50,27 @@ class ReviewActivity : AppCompatActivity() {
 
         myRef=firebasedatabase.getReference("review/"+name+"/"+road)
         readReview()
+        review_star.setOnRatingBarChangeListener{ ratingBar, rating, fromUser ->
+            review_star.rating=rating
+            rt= rating.toLong()
+        }
         reg_review_btn.setOnClickListener {
-            writeReview(userid,usernickname,name,road)
-            finish()
-        }
-        val spinner: Spinner = findViewById(R.id.review_star)
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.star_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            spinner.adapter = adapter
-        }
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                var item = spinner.adapter.getItem(0)
-                sitem=item.toString()
+            if(review_star.rating<1){
+                Toast.makeText(this,"평점은 1점 이상 입력 가능합니다.",Toast.LENGTH_SHORT).show()
+            }
+            else if(review_title.text.length<1){
+                Toast.makeText(this,"한줄평을 입력해주세요.",Toast.LENGTH_SHORT).show()
+            }
+            else if(review_content.text.length<20){
+                Toast.makeText(this,"최소 20자 이상 입력해주세요.",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                writeReview(userid,usernickname,name,road)
+                finish()
             }
 
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                // either one will work as well
-                // val item = parent.getItemAtPosition(position) as String
-                var item = spinner.adapter.getItem(position)
-                sitem=item.toString()
-            }
         }
+
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun writeReview(user_id:String, nickname:String, name: String, road:String) {
@@ -89,7 +78,7 @@ class ReviewActivity : AppCompatActivity() {
         val onlyDate: LocalDate = LocalDate.now()
         val titleeditText = findViewById<View>(R.id.review_title) as EditText
         val contenteditText = findViewById<View>(R.id.review_content) as EditText
-        val newReview= Review(nickname, sitem, titleeditText.text.toString(), contenteditText.text.toString(),onlyDate.toString())
+        val newReview= Review(nickname, rt, titleeditText.text.toString(), contenteditText.text.toString(),onlyDate.toString())
         database.child("review").child(name).child(road).child(user_id).setValue(newReview)
     }
 
@@ -104,16 +93,16 @@ class ReviewActivity : AppCompatActivity() {
                 for (u in getUserInfo.children){
                     val user_id: String=u.key.toString()
                     val content: String=u.child("content").value as String
-                    val star: String=u.child("star").value as String
+                    val star: Long =u.child("star").value as Long
                     val title: String=u.child("title").value as String
 
                     if(user_id==userid){
                         val r_title = findViewById<View>(R.id.review_title) as EditText
                         val r_content = findViewById<View>(R.id.review_content) as EditText
-                        val r_star=findViewById<View>(R.id.review_star) as Spinner
+                        val r_star=findViewById<View>(R.id.review_star) as RatingBar
                         r_title.setText(title)
                         r_content.setText(content)
-                        r_star.setSelection(star.toInt()-1)
+                        r_star.rating=star.toFloat()
                     }
                 }
             }

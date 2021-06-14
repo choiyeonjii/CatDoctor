@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("kakao", kakao)
             intent.putExtra("google", google)
             intent.putExtra("normal", normal)
+            intent.putExtra("id",userid)
+            intent.putExtra("nickname",usernickname)
             startActivity(intent)
             //finish()
         }

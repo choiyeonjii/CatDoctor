@@ -29,7 +29,17 @@ class ReviewAdapter(val review:ArrayList<HospitalReviewActivity.Review>) : Recyc
 
     //data class Review(var nickname: String, var star: String, var title: String, var content: String, var date: String)
     override fun onBindViewHolder(holder: ReviewAdapter.ViewHolder, position: Int) {
-        holder.star.text = review[position].star
+        var star_string=review[position].star.toString()
+        var star_int=star_string.toInt()
+        var showString=""
+        for(i in 1..star_int){
+            showString+="💛 "
+        }
+        for(i in star_int+1..5){
+            showString+="🤍 "
+        }
+        showString+=star_string
+        holder.star.text = showString
         holder.nickname.text = review[position].nickname
         holder.title.text = review[position].title
         holder.content.text = review[position].content

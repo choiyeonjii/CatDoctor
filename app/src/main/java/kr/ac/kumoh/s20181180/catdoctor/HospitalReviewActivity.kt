@@ -24,7 +24,8 @@ class HospitalReviewActivity : AppCompatActivity() {
     var road=""
     var call=""
 
-    data class Review(var nickname: String, var star: String, var title: String, var content: String, var date: String): Serializable
+    var show=0
+    data class Review(var nickname: String, var star: Long, var title: String, var content: String, var date: String): Serializable
     val firebasedatabase = Firebase.database
     val myRef=firebasedatabase.getReference("review")
     private var review = ArrayList<Review>()
@@ -60,10 +61,7 @@ class HospitalReviewActivity : AppCompatActivity() {
         readReview(name,road)
 
         hospital_name.setOnClickListener {
-            review_list.adapter=reviewAdapter
-            val lm=LinearLayoutManager(this)
-            review_list.layoutManager = lm
-            review_list.setHasFixedSize(true)
+
         }
         button_write_review.setOnClickListener {
             val intent = Intent(applicationContext, ReviewActivity::class.java)
@@ -93,12 +91,17 @@ class HospitalReviewActivity : AppCompatActivity() {
                 for (u in getReviewInfo.children) {
                     val user_id: String = u.key.toString()
                     val content: String = u.child("content").value as String
-                    val star: String = u.child("star").value as String
+                    val star: Long = u.child("star").value as Long
                     val title: String = u.child("title").value as String
                     val date: String = u.child("date").value as String
-                    review.add(Review(usernickname, star, title, content, date))
+                    val user_nickname:String = u.child("nickname").value as String
+                    review.add(Review(user_nickname, star, title, content, date))
                 }
                 Log.v("병원리뷰데이터1",review.toString())
+                review_list.adapter=reviewAdapter
+                val lm=LinearLayoutManager(applicationContext)
+                review_list.layoutManager = lm
+                review_list.setHasFixedSize(true)
 
             }
         })

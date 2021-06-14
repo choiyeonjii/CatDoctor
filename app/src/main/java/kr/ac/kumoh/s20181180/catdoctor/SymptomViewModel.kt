@@ -1,6 +1,7 @@
 package kr.ac.kumoh.s20181180.catdoctor
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.Request
@@ -44,6 +45,7 @@ class SymptomViewModel(application: Application) : AndroidViewModel(application)
                     list.value = symptom
                 },
                 {
+                    Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
                 }
         )
 
