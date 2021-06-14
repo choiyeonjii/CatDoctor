@@ -6,6 +6,6 @@ class ListLayout(val name: String,      // 장소명
                  val phone: String,   // 전화 번호
                  val x: String,         // 경도(Longitude)
                  val y: String,         // 위도(Latitude)
-                 val distance: String,
-                 val place_url: String
-                 )
+                 val distance: String,  // 거리
+                 val place_url: String  // 상세 정보
+)

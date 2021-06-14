@@ -92,21 +92,6 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
     }
-    private fun requestInfo() {
-        val request = JsonArrayRequest(
-                Request.Method.POST,
-                url,
-                null,
-                {
-                    //Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-                },
-                {
-                    Toast.makeText(getApplication(), it.toString(), Toast.LENGTH_LONG).show()
-                }
-        )
-        request.tag = "VolleyRequest"
-        mQueue.add(request)
-    }
     private fun writeNewUser(user_id:String, password:String, name:String, nickname:String) {
         val newUser= UserViewModel.User(user_id, password, name, nickname)
         database.child("user").child(user_id).setValue(newUser)
@@ -124,7 +109,6 @@ class RegisterActivity : AppCompatActivity() {
                     val name: String=u.child("name").value as String
                     val password: String=u.child("password").value as String
                     val nickname: String=u.child("nickname").value as String
-                    Log.v("name2",name)
                     user.add(User(user_id, password, name, nickname))
                 }
 

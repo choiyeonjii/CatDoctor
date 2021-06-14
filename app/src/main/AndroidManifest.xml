@@ -5,9 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".MyApplication"
@@ -18,11 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CatDoctor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PhotoDiagnoseActivity"
-            android:label="@string/app_name_diagnose"/>
-        <activity
-            android:name=".SelectDiagnoseTypeActivity"
-            android:label="@string/app_name_diagnose" />
+        <activity android:name=".ReviewActivity"></activity>
+        <activity android:name=".HospitalReviewActivity" />
         <activity android:name=".MapActivity" />
         <activity
             android:name=".DiseaseDetailActivity"
@@ -59,15 +53,7 @@
                     android:scheme="kakaocad309bfb040b22ed4b2a126909f3dc4" />
             </intent-filter>
         </activity>
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="org.techtown.capturepicture.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
-        </provider>
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="cad309bfb040b22ed4b2a126909f3dc4" />

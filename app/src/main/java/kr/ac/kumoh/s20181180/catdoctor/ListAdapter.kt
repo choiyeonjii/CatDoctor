@@ -30,8 +30,11 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
         holder.name.text = itemList[position].name
         holder.road.text = itemList[position].road
         holder.phone.text = itemList[position].phone
+        var dist = itemList[position].distance.toDouble()
+        dist /= 1000
+        holder.distance.text = dist.toString()+"km"
 
-        // 아이템 클릭 이벤트
+                // 아이템 클릭 이벤트
         holder.itemView.setOnClickListener {
             itemClickListener.onClick(it, position)
         }
@@ -43,12 +46,17 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
         holder.itemView.route.setOnClickListener {
             routeClickListener.onClick(it, position)
         }
+        //리뷰 이벤트
+        holder.itemView.review.setOnClickListener {
+            reviewClickListener.onClick(it, position)
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.tv_list_name)
         val road: TextView = itemView.findViewById(R.id.tv_list_road)
         val phone: TextView = itemView.findViewById(R.id.tv_list_phone)
+        val distance: TextView = itemView.findViewById(R.id.tv_list_distance)
     }
 
     interface OnItemClickListener {
@@ -82,4 +90,16 @@ class ListAdapter(val itemList: ArrayList<ListLayout>): RecyclerView.Adapter<Lis
     }
 
     private lateinit var routeClickListener: OnRouteClickListener
+
+
+    //리뷰
+    interface OnReviewClickListener {
+        fun onClick(v: View, position: Int)
+    }
+
+    fun setReviewClickListener(OnReviewClickListener: OnReviewClickListener) {
+        this.reviewClickListener = OnReviewClickListener
+    }
+
+    private lateinit var reviewClickListener: OnReviewClickListener
 }

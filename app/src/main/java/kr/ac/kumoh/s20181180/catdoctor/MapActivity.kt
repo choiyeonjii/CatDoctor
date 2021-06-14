@@ -26,8 +26,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Thread.sleep
-import java.util.*
 
 
 class MapActivity : AppCompatActivity() {
@@ -47,6 +45,8 @@ class MapActivity : AppCompatActivity() {
     private var longitude = 0.0
     private var isper = 0
     private var eventListener = MarkerEventListener(this)
+    private var userid=""
+    private var usernickname=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +55,27 @@ class MapActivity : AppCompatActivity() {
         setContentView(view)
         mapView = binding.mapView
         mapView.setPOIItemEventListener(eventListener)
+
+        userid=intent.getStringExtra("id").toString()
+        usernickname=intent.getStringExtra("nickname").toString()
+
+        var range = 3000
+        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            when(checkedId){
+                R.id.radioButton->{
+                    range = 3000
+                    searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+                }
+                R.id.radioButton2->{
+                    range = 5000
+                    searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+                }
+                R.id.radioButton3->{
+                    range = 7000
+                    searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+                }
+            }
+        }
 
         // 위치추적 버튼
         gps_btn.setOnClickListener {
@@ -66,7 +87,7 @@ class MapActivity : AppCompatActivity() {
                 Toast.makeText(this, "현재위치 \n위도 $latitude\n경도 $longitude", Toast.LENGTH_LONG).show()
                 permissionCheck()
                 pageNumber = 1
-                searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
+                searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
             } else {
                 // GPS가 꺼져있을 경우
                 Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
@@ -79,12 +100,12 @@ class MapActivity : AppCompatActivity() {
         // 리스트 아이템 클릭 시 해당 위치로 이동
         listAdapter.setItemClickListener(object : ListAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
-                stopTracking()
                 val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y.toDouble(), listItems[position].x.toDouble())
                 binding.mapView.setMapCenterPointAndZoomLevel(mapPoint, 1, true)
             }
         })
 
+        // 전화
         listAdapter.setCallClickListener(object : ListAdapter.OnCallClickListener{
             override fun onClick(v: View, position: Int) {
                 val input = listItems[position].phone
@@ -94,6 +115,7 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
+        //길찾기
         listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
             override fun onClick(v: View, position: Int) {
                 val builder = AlertDialog.Builder(this@MapActivity)
@@ -123,11 +145,28 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
+        //리뷰
+        listAdapter.setReviewClickListener(object : ListAdapter.OnReviewClickListener{
+            override fun onClick(v: View, position: Int) {
+                val name = listItems[position].name
+                val road = listItems[position].road
+                val call = listItems[position].phone
+
+                val intent = Intent(applicationContext, HospitalReviewActivity::class.java)
+                intent.putExtra("name", name)
+                intent.putExtra("road", road)
+                intent.putExtra("call", call)
+                intent.putExtra("id",userid)
+                intent.putExtra("nickname",usernickname)
+                startActivity(intent)
+            }
+        })
+
         // 이전 페이지 버튼
         binding.btnPrevPage.setOnClickListener {
             pageNumber--
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
             binding.rvList.smoothScrollToPosition(0)
         }
 
@@ -135,7 +174,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnNextPage.setOnClickListener {
             pageNumber++
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
             binding.rvList.smoothScrollToPosition(0)
         }
     }
@@ -214,13 +253,13 @@ class MapActivity : AppCompatActivity() {
     }
 
     // 키워드 검색 함수
-    private fun searchKeyword(keyword: String, longitude: String, latitude: String, page: Int) {
+    private fun searchKeyword(keyword: String, longitude: String, latitude: String, page: Int, range: Int) {
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
         val api = retrofit.create(KakaoMap::class.java)            // 통신 인터페이스를 객체로 생성
-        val call = api.getSearchKeyword(API_KEY, keyword, longitude, latitude, 5000, page)    // 검색 조건 입력
+        val call = api.getSearchKeyword(API_KEY, keyword, longitude, latitude, range, page)    // 검색 조건 입력
 
         // API 서버에 요청
         call.enqueue(object : Callback<ResultSearchKeyword> {
@@ -240,29 +279,29 @@ class MapActivity : AppCompatActivity() {
     private fun addItemsAndMarkers(searchResult: ResultSearchKeyword?) {
         if (!searchResult?.documents.isNullOrEmpty() && isper == 1) {
             // 검색 결과 있음
-            //stopTracking()
+            stopTracking()
             listItems.clear()                   // 리스트 초기화
             binding.mapView.removeAllPOIItems() // 지도의 마커 모두 제거
             for (document in searchResult!!.documents) {
                 // 결과를 리사이클러 뷰에 추가
                 if(document.road_address_name.equals("")){
                     val item = ListLayout(document.place_name,
-                        document.address_name,
-                        document.phone,
-                        document.x,
-                        document.y,
-                        document.distance,
-                        document.place_url)
+                            document.address_name,
+                            document.phone,
+                            document.x,
+                            document.y,
+                            document.distance,
+                            document.place_url)
                     listItems.add(item)
                 }
                 else{
                     val item = ListLayout(document.place_name,
-                        document.road_address_name,
-                        document.phone,
-                        document.x,
-                        document.y,
-                        document.distance,
-                        document.place_url)
+                            document.road_address_name,
+                            document.phone,
+                            document.x,
+                            document.y,
+                            document.distance,
+                            document.place_url)
                     listItems.add(item)
                 }
 
@@ -271,7 +310,7 @@ class MapActivity : AppCompatActivity() {
                 point.apply {
                     itemName = document.place_name
                     mapPoint = MapPoint.mapPointWithGeoCoord(document.y.toDouble(),
-                        document.x.toDouble())
+                            document.x.toDouble())
                     markerType = MapPOIItem.MarkerType.BluePin
                     selectedMarkerType = MapPOIItem.MarkerType.RedPin
                 }
