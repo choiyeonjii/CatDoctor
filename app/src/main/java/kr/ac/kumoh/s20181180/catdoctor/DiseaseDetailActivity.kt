@@ -39,11 +39,13 @@ class DiseaseDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_diseasedetail)
-
+        Log.i("disease_id2", "ddd")
         disease_id = intent.getStringExtra(DISEASE_ID).toString()
         Log.i("disease_id2", disease_id)
 
         symptom_id = intent.getIntegerArrayListExtra(SYMPTOM_ID) as ArrayList<Int>
+        Log.i("symptomID", symptom_id.toString())
+        Log.i("symptomID", symptom_id.size.toString())
 
         mQueue = Volley.newRequestQueue(this)
         requestDisease()
