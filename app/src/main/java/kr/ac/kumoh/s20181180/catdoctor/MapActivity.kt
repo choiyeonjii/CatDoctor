@@ -113,6 +113,7 @@ class MapActivity : AppCompatActivity() {
         // 리스트 아이템 클릭 시 해당 위치로 이동
         listAdapter.setItemClickListener(object : ListAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
+                stopTracking()
                 val mapPoint = MapPoint.mapPointWithGeoCoord(listItems[position].y.toDouble(), listItems[position].x.toDouble())
                 binding.mapView.setMapCenterPointAndZoomLevel(mapPoint, 1, true)
             }
@@ -143,6 +144,36 @@ class MapActivity : AppCompatActivity() {
                 intent.putExtra("nickname",usernickname)
                 startActivity(intent)
 
+            }
+        })
+
+        //길찾기
+        listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
+            override fun onClick(v: View, position: Int) {
+                val builder = AlertDialog.Builder(this@MapActivity)
+                val itemList = arrayOf("자동차", "대중교통", "도보")
+                val url = "kakaomap://route?sp=${latitude},${longitude}&ep=${listItems[position].y},${listItems[position].x}"
+                builder.setTitle("길찾기")
+                builder.setItems(itemList) { dialog, which ->
+                    when(which) {
+                        0 -> {
+                            val car_url = Uri.parse("${url}&by=CAR")
+                            intent = Intent(Intent.ACTION_VIEW, car_url)
+                            startActivity(intent)
+                        }
+                        1 ->{
+                            val pub_url = Uri.parse("${url}&by=PUBLICTRANSIT")
+                            intent = Intent(Intent.ACTION_VIEW, pub_url)
+                            startActivity(intent)
+                        }
+                        2 ->{
+                            val foot_url = Uri.parse("${url}&by=FOOT")
+                            intent = Intent(Intent.ACTION_VIEW, foot_url)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                builder.show()
             }
         })
 
@@ -263,7 +294,7 @@ class MapActivity : AppCompatActivity() {
     private fun addItemsAndMarkers(searchResult: ResultSearchKeyword?) {
         if (!searchResult?.documents.isNullOrEmpty() && isper == 1) {
             // 검색 결과 있음
-            stopTracking()
+            //stopTracking()
             listItems.clear()                   // 리스트 초기화
             binding.mapView.removeAllPOIItems() // 지도의 마커 모두 제거
             for (document in searchResult!!.documents) {

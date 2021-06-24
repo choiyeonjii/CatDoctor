@@ -18,9 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CatDoctor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ReviewActivity"></activity>
-        <activity android:name=".HospitalReviewActivity" />
-        <activity android:name=".MapActivity" />
+        <activity android:name=".ReviewActivity"
+            android:label="리뷰작성" ></activity>
+        <activity android:name=".HospitalReviewActivity"
+            android:label="동물병원 리뷰" />
+        <activity android:name=".MapActivity"
+            android:label="동물병원 찾기" />
         <activity android:name=".PhotoDiagnoseActivity"
             android:label="@string/app_name_diagnose"/>
         <activity
@@ -46,8 +49,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".MypageActivity" />
+        <activity android:name=".RegisterActivity"
+                    android:label="회원가입" />
+        <activity android:name=".MypageActivity"
+                    android:label="마이페이지" />
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
