@@ -16,6 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_map.*
 import kr.ac.kumoh.s20181180.catdoctor.databinding.ActivityMapBinding
 import net.daum.mf.map.api.MapPOIItem
@@ -26,6 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.Serializable
 
 
 class MapActivity : AppCompatActivity() {
@@ -47,6 +53,13 @@ class MapActivity : AppCompatActivity() {
     private var eventListener = MarkerEventListener(this)
     private var userid=""
     private var usernickname=""
+
+    val firebasedatabase = Firebase.database
+    val myRef=firebasedatabase.getReference("review")
+
+    data class Review(var nickname: String, var star: String, var title: String, var content: String, var date: String): Serializable
+
+    private var review = ArrayList<Review>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +118,7 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
-        // 전화
+        //전화
         listAdapter.setCallClickListener(object : ListAdapter.OnCallClickListener{
             override fun onClick(v: View, position: Int) {
                 val input = listItems[position].phone
@@ -115,50 +128,21 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
-        //길찾기
-        listAdapter.setRouteClickListener(object : ListAdapter.OnRouteClickListener{
-            override fun onClick(v: View, position: Int) {
-                val builder = AlertDialog.Builder(this@MapActivity)
-                val itemList = arrayOf("자동차", "대중교통", "도보")
-                val url = "kakaomap://route?sp=${latitude},${longitude}&ep=${listItems[position].y},${listItems[position].x}"
-                builder.setTitle("길찾기")
-                builder.setItems(itemList) { dialog, which ->
-                    when(which) {
-                        0 -> {
-                            val car_url = Uri.parse("${url}&by=CAR")
-                            intent = Intent(Intent.ACTION_VIEW, car_url)
-                            startActivity(intent)
-                        }
-                        1 ->{
-                            val pub_url = Uri.parse("${url}&by=PUBLICTRANSIT")
-                            intent = Intent(Intent.ACTION_VIEW, pub_url)
-                            startActivity(intent)
-                        }
-                        2 ->{
-                            val foot_url = Uri.parse("${url}&by=FOOT")
-                            intent = Intent(Intent.ACTION_VIEW, foot_url)
-                            startActivity(intent)
-                        }
-                    }
-                }
-                builder.show()
-            }
-        })
-
         //리뷰
         listAdapter.setReviewClickListener(object : ListAdapter.OnReviewClickListener{
             override fun onClick(v: View, position: Int) {
                 val name = listItems[position].name
                 val road = listItems[position].road
                 val call = listItems[position].phone
-
                 val intent = Intent(applicationContext, HospitalReviewActivity::class.java)
+
                 intent.putExtra("name", name)
                 intent.putExtra("road", road)
                 intent.putExtra("call", call)
                 intent.putExtra("id",userid)
                 intent.putExtra("nickname",usernickname)
                 startActivity(intent)
+
             }
         })
 
@@ -166,7 +150,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnPrevPage.setOnClickListener {
             pageNumber--
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber,range)
             binding.rvList.smoothScrollToPosition(0)
         }
 
@@ -174,7 +158,7 @@ class MapActivity : AppCompatActivity() {
         binding.btnNextPage.setOnClickListener {
             pageNumber++
             binding.tvPageNumber.text = pageNumber.toString()
-            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber, range)
+            searchKeyword(keyword, longitude.toString(), latitude.toString(), pageNumber,range)
             binding.rvList.smoothScrollToPosition(0)
         }
     }
