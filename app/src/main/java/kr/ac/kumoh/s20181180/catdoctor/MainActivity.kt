@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        const val SERVER_URL = "http://192.168.0.15:8080"
+        const val SERVER_URL = "http://192.168.0.12:8080"
     }
 
     private var kakao=0
