@@ -10,15 +10,14 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.NetworkImageView
 import kotlinx.android.synthetic.main.activity_symptomclassify.*
-import kotlinx.android.synthetic.main.item_symptomclassify.*
 import kr.ac.kumoh.s20181180.catdoctor.SymptomClassifyViewModel.Companion.CLASSIFY
 
 class SymptomClassifyActivity : AppCompatActivity() {
@@ -42,7 +41,7 @@ class SymptomClassifyActivity : AppCompatActivity() {
                 ViewModelProvider.AndroidViewModelFactory(application))
                 .get(SymptomClassifyViewModel::class.java)
 
-        model.list1.observe(this, Observer<ArrayList<SymptomClassifyViewModel.SymptomClassify>> {
+        model.list.observe(this, Observer<ArrayList<SymptomClassifyViewModel.SymptomClassify>> {
             mAdapter.notifyDataSetChanged()
         })
 

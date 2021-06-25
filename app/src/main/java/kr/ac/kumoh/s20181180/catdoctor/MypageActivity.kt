@@ -6,23 +6,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.user.UserApiClient
-import kotlinx.android.synthetic.main.activity_main.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import kotlinx.android.synthetic.main.activity_main.txResult
+import com.google.firebase.database.ktx.database
 import kotlinx.android.synthetic.main.activity_mypage.*
 
 class MypageActivity : AppCompatActivity() {
     private var kakao=0
     private var google=0
     private var normal=0
+    private var userid=""
+    private var usernickname=""
 
     private lateinit var prefs: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -34,22 +31,23 @@ class MypageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mypage)
 
-
         prefs = this.getSharedPreferences("Prefs", 0)
         editor = prefs.edit()
 
         kakao = intent.getIntExtra("kakao", kakao)
         google = intent.getIntExtra("google", google)
         normal = intent.getIntExtra("normal", normal)
-        Log.i("MainActivity: kakao", kakao.toString())
-        Log.i("google", google.toString())
-        Log.i("normal", normal.toString())
+        userid=intent.getStringExtra("id").toString()
+        usernickname=intent.getStringExtra("nickname").toString()
 
         logout_btn.setOnClickListener {
             if(kakao!=0) {
                 // kakao 로그아웃
                 UserApiClient.instance.logout { error ->
                     if (error != null) {
+                        kakao=0
+                        editor.putInt("kakao", kakao).apply()
+                        editor.commit()
                         Log.e("TAG", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
                     } else {
                         kakao=0
@@ -58,6 +56,7 @@ class MypageActivity : AppCompatActivity() {
                         Toast.makeText(this, "로그아웃 성공. SDK에서 토큰 삭제됨", Toast.LENGTH_LONG).show()
                         Log.i("TAG", "로그아웃 성공. SDK에서 토큰 삭제됨")
                         startActivity(Intent(this, LoginActivity::class.java))
+                        finishAffinity()
                         finish()
                     }
                 }
@@ -73,11 +72,11 @@ class MypageActivity : AppCompatActivity() {
                 finish()
             }
             else if(google!=0){
+                google=0
                 Firebase.auth.signOut()
                 Log.v("logout","구글 로그아웃 성공")
                 editor.putInt("google", google).apply()
                 editor.commit()
-                google=0
                 intent= Intent(this, LoginActivity::class.java)
                 intent.putExtra("google", google)
                 startActivity(intent)
@@ -101,6 +100,16 @@ class MypageActivity : AppCompatActivity() {
                         finish()
                     }
                 }
+            }
+            else if(normal!=0){
+                val firebasedatabase = Firebase.database
+                val myRef=firebasedatabase.getReference("user/"+userid)
+                myRef.removeValue()
+                normal=0
+                editor.putInt("normal",normal).apply()
+                editor.commit()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
             else if(google!=0){
                 var user = Firebase.auth.currentUser;

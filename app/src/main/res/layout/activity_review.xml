@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".ReviewActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="평점을 선택하세요."
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+
+            tools:layout_editor_absoluteX="16dp" />
+
+        <RatingBar
+            android:id="@+id/review_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:numStars="5"
+            android:stepSize="1"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="한줄평을 작성해 주세요."
+            android:textSize="15sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <EditText
+            android:id="@+id/review_title"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:maxLength="30"
+            android:layout_marginRight="5dp"
+            android:singleLine="true"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:gravity="center"
+            android:text="리뷰를 작성해 주세요."
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <EditText
+            android:id="@+id/review_content"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:gravity="start"
+            android:lines="20"
+            android:hint="최소 20자 이상 입력해주세요."
+
+            android:scrollbars="vertical"
+            android:singleLine="false"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/reg_review_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="리뷰 등록하기"
+        android:layout_gravity="center"/>
+
+
+</LinearLayout>

@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="kr.ac.kumoh.s20181180.catdoctor">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".MyApplication"
@@ -14,20 +18,45 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CatDoctor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SymptomActivity"></activity>
-        <activity android:name=".SymptomClassifyActivity" />
+        <activity android:name=".ReviewActivity"
+            android:label="리뷰작성" ></activity>
+        <activity android:name=".HospitalReviewActivity"
+            android:label="동물병원 리뷰" />
+        <activity android:name=".MapActivity"
+            android:label="동물병원 찾기" />
+        <activity android:name=".PhotoDiagnoseActivity"
+            android:label="@string/app_name_diagnose"/>
+        <activity
+            android:name=".SelectDiagnoseTypeActivity"
+            android:label="@string/app_name_diagnose" />
+        <activity
+            android:name=".DiseaseDetailActivity"
+            android:label="@string/app_name_diagnose_result" />
+        <activity
+            android:name=".DiagnoseActivity"
+            android:label="@string/app_name_diagnose_result" />
+        <activity
+            android:name=".SymptomActivity"
+            android:label="@string/app_name_diagnose" />
+        <activity
+            android:name=".SymptomClassifyActivity"
+            android:label="@string/app_name_diagnose" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".MypageActivity" />
+        <activity android:name=".RegisterActivity"
+                    android:label="회원가입" />
+        <activity android:name=".MypageActivity"
+                    android:label="마이페이지" />
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -37,6 +66,18 @@
                     android:scheme="kakaocad309bfb040b22ed4b2a126909f3dc4" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="org.techtown.capturepicture.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="cad309bfb040b22ed4b2a126909f3dc4" />
     </application>
 
 </manifest>

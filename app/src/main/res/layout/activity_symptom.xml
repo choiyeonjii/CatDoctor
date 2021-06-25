@@ -10,7 +10,9 @@
         android:id="@+id/symptomTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="5dp"
+        android:textSize="22sp"
         android:gravity="center"
         android:text="증상을 선택해주세요."
         app:layout_constraintBottom_toTopOf="@id/lsResultSymptom"
@@ -41,6 +43,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lsResultSymptom" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

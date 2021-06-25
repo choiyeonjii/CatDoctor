@@ -6,17 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".MypageActivity">
 
+    <TextView
+        android:id="@+id/txResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:paddingTop="50dp"
+        android:text="CATDOCTOR\nMYPAGE"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/cat"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/logout_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txResult"/>
+
     <Button
         android:id="@+id/logout_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="로그아웃"
         android:textColor="@android:color/black"
+        android:padding="20dp"
+        android:textSize="15sp"
         android:backgroundTint="@color/pink"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/kakao_signout_btn"
-        app:layout_constraintTop_toBottomOf="@+id/txResult" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 
     <Button
@@ -26,20 +55,12 @@
         android:text="회원탈퇴"
         android:textColor="@android:color/black"
         android:backgroundTint="@color/pink"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="15sp"
+        android:padding="20dp"
         app:layout_constraintLeft_toRightOf="@id/logout_btn"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txResult" />
+        app:layout_constraintTop_toTopOf="@+id/logout_btn" />
 
-    <TextView
-        android:id="@+id/txResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="마이페이지 화면"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
