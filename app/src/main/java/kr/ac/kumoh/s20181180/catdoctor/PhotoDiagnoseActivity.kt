@@ -107,21 +107,24 @@ class PhotoDiagnoseActivity : AppCompatActivity() {
                     max_index = i
                 }
             }
-
-            if (max_index == 0) {
-                tv_output.text = "ringworm와\n"+ output[0][0] * 100 +"%\n일치합니다."
+            if (max_index == 0) {   // 링웜
+                tv_output.text = "Ringworm와\n"+ output[0][0] * 100 +"%\n일치합니다."
                 train_disease_id = 964
-            } else if (max_index == 1) {
-                tv_output.text = "feline acne와\n"+ output[0][1] * 100 +"%\n일치합니다."
+            } else if (max_index == 1) {    // 턱드름
+                tv_output.text = "Feline Acne와\n"+ output[0][1] * 100 +"%\n일치합니다."
                 train_disease_id = 965
-            } else if (max_index == 2) {
-                tv_output.text = "external otitis와\n"+ output[0][2] * 100 +"%\n일치합니다."
-            } else if (max_index == 3) {
-                tv_output.text = "periodontal disease와\n"+ output[0][3] * 100 +"%\n일치합니다."
-            } else if (max_index == 4) {
-                tv_output.text = "feline stomatitis와\n"+ output[0][4] * 100 +"%\n일치합니다."
-            } else if (max_index == 5) {
-                tv_output.text = "uveitis와\n"+ output[0][5] * 100 +"%\n일치합니다."
+            } else if (max_index == 2) {    // 외이도염
+                tv_output.text = "External Otitis와\n"+ output[0][2] * 100 +"%\n일치합니다."
+                train_disease_id = 966
+            } else if (max_index == 3) {    // 치주염
+                tv_output.text = "Periodontal Disease와\n"+ output[0][3] * 100 +"%\n일치합니다."
+                train_disease_id = 967
+            } else if (max_index == 4) {    // 구내염
+                tv_output.text = "Feline Stomatitis와\n"+ output[0][4] * 100 +"%\n일치합니다."
+                train_disease_id = 834
+            } else if (max_index == 5) { // 포도막염
+                tv_output.text = "Uveitis와\n"+ output[0][5] * 100 +"%\n일치합니다."
+                train_disease_id = 923
             }else {
                 tv_output.text = "예측 결과가 없습니다."
             }
@@ -169,20 +172,24 @@ class PhotoDiagnoseActivity : AppCompatActivity() {
                 }
             }
 
-            if (max_index == 0) {
-                tv_output.text = "ringworm와\n"+ output[0][0] * 100 +"%\n일치합니다."
+            if (max_index == 0) {   // 링웜
+                tv_output.text = "Ringworm와\n"+ output[0][0] * 100 +"%\n일치합니다."
                 train_disease_id = 964
-            } else if (max_index == 1) {
-                tv_output.text = "feline acne와\n"+ output[0][1] * 100 +"%\n일치합니다."
+            } else if (max_index == 1) {    // 턱드름
+                tv_output.text = "Feline Acne와\n"+ output[0][1] * 100 +"%\n일치합니다."
                 train_disease_id = 965
-            } else if (max_index == 2) {
-                tv_output.text = "external otitis와\n"+ output[0][2] * 100 +"%\n일치합니다."
-            } else if (max_index == 3) {
-                tv_output.text = "periodontal disease와\n"+ output[0][3] * 100 +"%\n일치합니다."
-            } else if (max_index == 4) {
-                tv_output.text = "feline stomatitis와\n"+ output[0][4] * 100 +"%\n일치합니다."
-            } else if (max_index == 5) {
-                tv_output.text = "uveitis와\n"+ output[0][5] * 100 +"%\n일치합니다."
+            } else if (max_index == 2) {    // 외이도염
+                tv_output.text = "External Otitis와\n"+ output[0][2] * 100 +"%\n일치합니다."
+                train_disease_id = 966
+            } else if (max_index == 3) {    // 치주염
+                tv_output.text = "Periodontal Disease와\n"+ output[0][3] * 100 +"%\n일치합니다."
+                train_disease_id = 967
+            } else if (max_index == 4) {    // 구내염
+                tv_output.text = "Feline Stomatitis와\n"+ output[0][4] * 100 +"%\n일치합니다."
+                train_disease_id = 834
+            } else if (max_index == 5) { // 포도막염
+                tv_output.text = "Uveitis와\n"+ output[0][5] * 100 +"%\n일치합니다."
+                train_disease_id = 923
             }else {
                 tv_output.text = "예측 결과가 없습니다."
             }
